@@ -4,7 +4,7 @@
 // @name:zh-CN     PikPak 助手
 // @name:ja        PikPak アシスタント
 // @namespace      https://github.com/yjagh/
-// @version        2.2.1
+// @version        2.2.2
 // @description    PikPak 웹 드라이브를 확장해 빠른 탐색·중복 검사·파일명 일괄 변경·다운로드 기능을 제공하는 고급 파일 관리자.
 // @description:en Enhances PikPak with fast navigation, duplicate scan, bulk rename, and advanced file-management tools.
 // @description:zh-CN 基于 PikPak 网页 API，提供快速浏览、重复文件扫描、批量重命名和高级下载功能的文件管理器。
@@ -258,6 +258,7 @@
         loading_batch_delete: "삭제 중... {done}/{total}",
         msg_batch_delete_result: "삭제 완료: {success}개 성공, {failed}개 실패.",
         label_folders_first: "폴더를 항상 위에 표시",
+        label_sub_translate: "자막 자동 번역 (Google에 전송)",
         col_created: "생성 일자",
         btn_filter: "필터",
         tip_filter: "파일 타입, 크기, 날짜 등 조건으로 필터링합니다.",
@@ -455,6 +456,7 @@
         loading_batch_delete: "Deleting... {done}/{total}",
         msg_batch_delete_result: "Deletion complete: {success} succeeded, {failed} failed.",
         label_folders_first: "Always show folders on top",
+        label_sub_translate: "Auto-translate subtitles (sends to Google)",
         col_created: "Created",
         btn_filter: "Filter",
         tip_filter: "Filter by file type, size, date, etc.",
@@ -651,6 +653,7 @@
         loading_batch_delete: "削除中... {done}/{total}",
         msg_batch_delete_result: "削除完了: {success} 件成功、{failed} 件失敗。",
         label_folders_first: "フォルダを常に上に表示",
+        label_sub_translate: "字幕を自動翻訳 (Googleへ送信)",
         col_created: "作成日",
         btn_filter: "フィルター",
         tip_filter: "ファイルタイプ、サイズ、日付などで絞り込みます。",
@@ -847,6 +850,7 @@
         loading_batch_delete: "正在分批删除... {done}/{total}",
         msg_batch_delete_result: "删除完成：成功 {success} 项，失败 {failed} 项。",
         label_folders_first: "文件夹始终置顶显示",
+        label_sub_translate: "字幕自动翻译（发送到 Google）",
         col_created: "创建日期",
         btn_filter: "筛选",
         tip_filter: "按文件类型、大小、日期等条件筛选。",
@@ -936,8 +940,11 @@
         };
     }
     async function apiList(parentId, limit = 1e3, onProgress, checkActive, filters = null) {
-        let all = [], next = null, safe = 5e3;
-        do {
+        let all = [], next = null, safe = 5e3, retry = 0;
+        // while 循环（非 do...while）：429 时 continue 回到循环顶部重试当前页，
+        // 而不是像 do...while 那样跳到条件判断——首页 next 仍为 null 会直接退出，
+        // 把"被限流"误当成"空文件夹"返回
+        while (safe-- > 0) {
             if (checkActive && !checkActive()) throw new Error("AbortError");
             let filterStr = filters ? `&filters=${encodeURIComponent(JSON.stringify(filters))}` : "";
             const url = `https://api-drive.mypikpak.com/drive/v1/files?thumbnail_size=SIZE_MEDIUM&limit=${limit}&parent_id=${parentId || ""}&with_audit=true${next ? `&page_token=${next}` : ""}${filterStr}`;
@@ -957,12 +964,15 @@
                 throw e;
             }
             if (!res.ok) {
-                if (res.status === 429) {
-                    await sleep(2e3);
+                // 429 限流：有上限地重试当前页（含首页）
+                if (res.status === 429 && retry < 5) {
+                    retry++;
+                    await sleep(2e3 * retry);
                     continue;
                 }
                 throw new Error("API Error " + res.status);
             }
+            retry = 0;
             const data = await res.json();
             if (data.files) {
                 const validFiles = data.files.filter(f => !f.trashed && f.phase === "PHASE_TYPE_COMPLETE");
@@ -973,8 +983,9 @@
                 }
             }
             next = data.next_page_token;
-            safe--;
-        } while (next && safe > 0 && (!checkActive || checkActive()));
+            if (!next) break;
+            if (checkActive && !checkActive()) break;
+        }
         return all;
     }
     async function apiGet(id) {
@@ -1170,6 +1181,30 @@
     const CSS = `\n    :root { --pk-bg: #ffffff; --pk-fg: #1a1a1a; --pk-bd: #e5e5e5; --pk-hl: #f0f0f0; --pk-sel-bg: #e6f3ff; --pk-sel-bd: #cce8ff; --pk-pri: #0067c0; --pk-btn-hov: #e0e0e0; --pk-gh: #f5f5f5; --pk-gh-fg: #333; --pk-sb-bg: transparent; --pk-sb-th: #ccc; --pk-sb-hov: #aaa; }\n    @media (prefers-color-scheme: dark) { :root { --pk-bg: #202020; --pk-fg: #f5f5f5; --pk-bd: #333333; --pk-hl: #2d2d2d; --pk-sel-bg: #2b3a4a; --pk-sel-bd: #0067c0; --pk-pri: #4cc2ff; --pk-btn-hov: #3a3a3a; --pk-gh: #2a2a2a; --pk-gh-fg: #eee; --pk-sb-th: #555; --pk-sb-hov: #777; } }\n    \n    .pk-ov { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.4); font-family: inherit; outline: none; }\n    \n    .pk-win { position: absolute; top: clamp(20px, 5vh, 100px); left: clamp(20px, 7.5vw, 150px); width: clamp(400px, 85vw, 1400px); height: clamp(300px, 90vh, 1200px); background: var(--pk-bg); color: var(--pk-fg); border-radius: 8px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--pk-bd); user-select: none; -webkit-user-select: none; }\n    .pk-win input, .pk-win select, .pk-win textarea { user-select: auto; -webkit-user-select: auto; }\n    \n    .pk-rz { position: absolute; z-index: 9999; }\n    .pk-rz-n { top: 0; left: 8px; right: 8px; height: 6px; cursor: n-resize; }\n    .pk-rz-s { bottom: 0; left: 8px; right: 8px; height: 6px; cursor: s-resize; }\n    .pk-rz-e { top: 8px; bottom: 8px; right: 0; width: 6px; cursor: e-resize; }\n    .pk-rz-w { top: 8px; bottom: 8px; left: 0; width: 6px; cursor: w-resize; }\n    .pk-rz-ne { top: 0; right: 0; width: 14px; height: 14px; cursor: ne-resize; z-index: 10000; }\n    .pk-rz-nw { top: 0; left: 0; width: 14px; height: 14px; cursor: nw-resize; z-index: 10000; }\n    .pk-rz-se { bottom: 0; right: 0; width: 14px; height: 14px; cursor: se-resize; z-index: 10000; }\n    .pk-rz-sw { bottom: 0; left: 0; width: 14px; height: 14px; cursor: sw-resize; z-index: 10000; }\n    \n    .pk-lasso { position: fixed; background: rgba(0, 103, 192, 0.2); border: 1px solid rgba(0, 103, 192, 0.6); pointer-events: none; z-index: 99999; }\n\n    .pk-hd { height: 48px; border-bottom: 1px solid var(--pk-bd); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--pk-bg); cursor: grab; }\n    .pk-hd:active { cursor: grabbing; }\n    .pk-tt { font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 10px; }\n    .pk-tb { padding: 8px 16px; border-bottom: 1px solid var(--pk-bd); display: flex; gap: 8px; align-items: center; background: var(--pk-bg); min-height: 48px; flex-wrap: wrap; }\n\n    .pk-btn { height: 32px; padding: 0 12px; border-radius: 4px; border: 1px solid transparent; background: transparent; color: var(--pk-fg); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.1s; position: relative; font-weight: 500; white-space: nowrap; flex-shrink: 0; }\n    .pk-btn:hover:not(:disabled) { background: var(--pk-btn-hov); }\n    .pk-btn:disabled { opacity: 0.4; cursor: not-allowed; }\n    .pk-btn.pri { color: var(--pk-pri); font-weight: 600; }\n    .pk-btn svg { width: 16px; height: 16px; flex-shrink: 0; display: block; vertical-align: middle; }\n    .pk-btn span { white-space: nowrap; transition: opacity 0.2s; }\n\n    /* Custom CSS Tooltips - uses data-tip to avoid native title double-display */\n    [data-tip] { position: relative; }\n    [data-tip]::after {\n        content: attr(data-tip);\n        position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);\n        background: #1a1a1a; color: #f5f5f5; padding: 5px 10px; border-radius: 4px; font-size: 11px; white-space: nowrap;\n        pointer-events: none; opacity: 0; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 99999;\n        box-shadow: 0 2px 8px rgba(0,0,0,0.3); border: 1px solid #333;\n        font-weight: 400; letter-spacing: 0.2px;\n    }\n    [data-tip]::before {\n        content: ''; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);\n        border: 5px solid transparent; border-top-color: #1a1a1a;\n        pointer-events: none; opacity: 0; transition: opacity 0.15s ease; z-index: 99999;\n    }\n    [data-tip]:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }\n    [data-tip]:hover::before { opacity: 1; }\n    /* Edge-safe: left-aligned tooltip (near left edge) */\n    [data-tip].tip-r::after { left: 0 !important; right: auto !important; transform: translateX(0) translateY(4px) !important; }\n    [data-tip].tip-r:hover::after { transform: translateX(0) translateY(0) !important; }\n    [data-tip].tip-r::before { left: 12px !important; right: auto !important; transform: translateX(0) !important; }\n    /* Edge-safe: right-aligned tooltip (near right edge) */\n    [data-tip].tip-l::after { left: auto !important; right: 0 !important; transform: translateX(0) translateY(4px) !important; }\n    [data-tip].tip-l:hover::after { transform: translateX(0) translateY(0) !important; }\n    [data-tip].tip-l::before { left: auto !important; right: 12px !important; transform: translateX(0) !important; }\n    /* Show tooltip below (for top-edge elements like player header) */\n    [data-tip].tip-down::after { bottom: auto !important; top: calc(100% + 8px) !important; }\n    [data-tip].tip-down::before { bottom: auto !important; top: calc(100% + 4px) !important; border-top-color: transparent !important; border-bottom-color: #1a1a1a !important; }\n\n    @media (max-width: 900px) {\n        .pk-btn span, .pk-dup-lbl { display: none !important; }\n        .pk-btn { padding: 0 8px; }\n        .pk-search input { width: 120px; }\n        .pk-search input:focus { width: 160px; }\n    }\n    \n    @media (max-width: 1390px) { .pk-lang-ko #pk-rename span, .pk-lang-ko #pk-bulkrename span { display: none; } }\n    @media (max-width: 1430px) { .pk-lang-en #pk-rename span, .pk-lang-en #pk-bulkrename span { display: none; } }\n    @media (max-width: 1480px) { .pk-lang-ja #pk-rename span, .pk-lang-ja #pk-bulkrename span { display: none; } }\n    @media (max-width: 1370px) { .pk-lang-zh #pk-rename span, .pk-lang-zh #pk-bulkrename span { display: none; } }\n\n    .pk-search { position: relative; display: flex; align-items: center; margin-right: 10px; border: 1px solid var(--pk-bd); border-radius: 4px; background: var(--pk-bg); transition: border-color 0.2s; }\n    .pk-search:focus-within { border-color: var(--pk-pri); }\n    .pk-search input { height: 32px; padding: 0 10px 0 32px; border: none; background: transparent; color: var(--pk-fg); font-size: 13px; width: 140px; transition: width 0.2s; outline: none; }\n    .pk-search input:focus { width: 220px; }\n    .pk-search svg { position: absolute; left: 10px; width: 14px; height: 14px; color: #888; pointer-events: none; }\n    .pk-filter-icon { margin-right: 6px; padding: 4px; cursor: pointer; border-radius: 4px; display: flex; align-items: center; color: var(--pk-fg); transition: background 0.2s; }\n    .pk-filter-icon:hover { background: var(--pk-btn-hov); }\n    .pk-filter-icon svg { position: static; width: 16px; height: 16px; color: currentColor; }\n\n    .pk-zoom-slider { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; height: 2px; }\n    .pk-zoom-slider::-webkit-slider-runnable-track { width: 100%; height: 4px; background: var(--pk-bd); border-radius: 2px; transition: background 0.2s; }\n    .pk-zoom-slider:hover::-webkit-slider-runnable-track { background: #b0b0b0; }\n    .pk-zoom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--pk-pri); cursor: pointer; margin-top: -4px; transition: transform 0.1s; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }\n    .pk-zoom-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }\n    .pk-zoom-slider:active::-webkit-slider-thumb { transform: scale(0.9); }\n\n    .pk-dup-toolbar { display:none; align-items:center; gap:4px; padding:0 8px; height:100%; margin-left:8px; overflow-x: auto; scrollbar-width: none; background: transparent; border: none; }\n    .pk-dup-lbl { font-weight: 500; color: var(--pk-fg); font-size: 13px; margin-right: 6px; opacity: 0.8; white-space: nowrap; flex-shrink: 0; }\n    .pk-btn-toggle { border: 1px solid var(--pk-bd); background: var(--pk-bg); color: var(--pk-fg); height: 30px; border-radius: 4px; padding: 0 10px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0; }\n    .pk-btn-toggle:hover { background: var(--pk-btn-hov); border-color: var(--pk-pri); }\n    .pk-btn-toggle span { font-weight: 700; color: var(--pk-pri); }\n\n    .pk-nav { display: flex; align-items: center; gap: 4px; overflow: hidden; white-space: nowrap; font-size: 13px; color: #666; margin: 0 8px; max-width: 60%; }\n    .pk-nav span { cursor: pointer; padding: 2px 6px; border-radius: 4px; } .pk-nav span:hover { background: var(--pk-hl); color: var(--pk-fg); }\n    .pk-nav span.act { font-weight: 600; color: var(--pk-fg); cursor: default; }\n\n    .pk-grid-hd, .pk-row { \n        display: grid; \n        grid-template-columns: 36px 1fr 90px 80px 100px; \n        column-gap: 10px; \n        align-items: center; \n        font-size: 13px; \n        color: var(--pk-fg);\n        box-sizing: border-box;\n    }\n\n    .pk-grid-hd > div:first-child, .pk-row > div:first-child {\n        display: flex; align-items: center; justify-content: center;\n        width: 100%; height: 100%;\n    }\n\n    .pk-grid-hd { height: 36px; border-bottom: 1px solid var(--pk-bd); font-size: 12px; color: #666; user-select: none; padding: 0 22px 0 16px; }\n    .pk-col { cursor: pointer; font-weight: 600; display:flex; align-items:center; justify-content: flex-start; } \n    .pk-col:hover { color: var(--pk-fg); }\n\n    .pk-vp::-webkit-scrollbar, .pk-modal::-webkit-scrollbar, .pk-prev-list::-webkit-scrollbar { width: 6px; }\n    .pk-vp::-webkit-scrollbar-track, .pk-modal::-webkit-scrollbar-track, .pk-prev-list::-webkit-scrollbar-track { background: var(--pk-sb-bg); }\n    .pk-vp::-webkit-scrollbar-thumb, .pk-modal::-webkit-scrollbar-thumb, .pk-prev-list::-webkit-scrollbar-thumb { background: var(--pk-sb-th); border-radius: 3px; }\n    .pk-vp::-webkit-scrollbar-thumb:hover, .pk-modal::-webkit-scrollbar-thumb:hover, .pk-prev-list::-webkit-scrollbar-thumb:hover { background: var(--pk-sb-hov); }\n\n    .pk-vp { flex: 1; overflow-y: overlay; position: relative; background: var(--pk-bg); }\n    .pk-in { position: absolute; width: 100%; top: 0; }\n    .pk-row { height: 40px; border-bottom: 1px solid transparent; cursor: default; padding: 0 16px; }\n    .pk-row:hover { background: var(--pk-hl); }\n    .pk-row.sel { background: var(--pk-sel-bg); border-color: transparent; }\n    \n    .pk-name { display: flex; align-items: center; overflow: hidden; min-width: 0; } \n    .pk-name svg { flex-shrink: 0; margin-right: 8px; } \n    .pk-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }\n\n    .pk-group-hd { display: flex; background: var(--pk-gh); color: var(--pk-gh-fg); font-weight: bold; align-items: center; padding: 0 16px; border-bottom: 1px solid var(--pk-bd); border-top: 1px solid var(--pk-bd); margin-top: -1px; min-height: 32px; }\n    .pk-group-hd .pk-tag { margin-left: auto; background: #666; color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; border: 1px solid #555; }\n    .pk-group-hd .pk-cnt { margin-left: 10px; color: var(--pk-fg); font-size: 12px; opacity: 0.9; }\n\n    .pk-loading-ov { display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }\n    .pk-spin-lg { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: pk-spin 1s linear infinite; margin-bottom: 20px; }\n    .pk-loading-txt { font-size: 16px; font-weight: 500; text-align: center; max-width: 80%; line-height: 1.4; white-space: pre-wrap; }\n    .pk-stop-btn { margin-top: 20px; padding: 8px 24px; background: rgba(255,0,0,0.8); color: #fff; border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; font-size: 14px; font-weight: bold; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }\n    .pk-stop-btn:hover { background: rgba(255,50,50,0.9); }\n    .pk-stop-btn:active { transform: scale(0.95); }\n\n    .pk-ft { height: 48px; border-top: 1px solid var(--pk-bd); background: var(--pk-bg); display: flex; align-items: center; padding: 0 16px; justify-content: space-between; font-size: 12px; }\n    .pk-stat { color: #949494; font-size: 12px; }\n    .pk-grp { display: flex; gap: 8px; }\n    .pk-pop { position: fixed; pointer-events: none; z-index: 10002; background: #000; border: 1px solid #333; box-shadow: 0 8px 24px rgba(0,0,0,0.4); border-radius: 6px; display: none; overflow: hidden; }\n    .pk-pop img { display: block; max-width: 320px; max-height: 240px; object-fit: contain; }\n    .pk-ctx { position: fixed; z-index: 10003; background: var(--pk-bg); border: 1px solid var(--pk-bd); border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); min-width: 150px; padding: 4px 0; display: none; }\n    .pk-ctx-item { padding: 8px 16px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--pk-fg); }\n    .pk-ctx-item:hover { background: var(--pk-hl); }\n    .pk-ctx-sep { height: 1px; background: var(--pk-bd); margin: 4px 0; }\n    .pk-modal-ov { position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 10001; display: flex; align-items: center; justify-content: center; }\n    \n    .pk-modal { position: relative; background: var(--pk-bg); padding: 25px; border-radius: 12px; width: 500px; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; border: 1px solid var(--pk-bd); box-shadow: 0 10px 40px rgba(0,0,0,0.4); }\n    .pk-modal h3 { margin: 0 0 5px 0; font-size: 16px; border-bottom: 1px solid var(--pk-bd); padding-bottom: 10px; padding-right: 40px; }\n    \n    .pk-modal-close { position: absolute; top: 15px; right: 15px; cursor: pointer; color: #888; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background 0.1s, color 0.1s; }\n    .pk-modal-close:hover { background: var(--pk-hl); color: var(--pk-fg); }\n\n    .pk-field { display: flex; flex-direction: column; gap: 5px; font-size: 13px; }\n    .pk-field input, .pk-field select { padding: 6px; border: 1px solid var(--pk-bd); border-radius: 4px; background: var(--pk-bg); color: var(--pk-fg); }\n    .pk-modal-act { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }\n    .pk-credit { font-size: 11px; color: #888; text-align: center; margin-top: 20px; border-top: 1px solid var(--pk-bd); padding-top: 10px; }\n    .pk-credit a { color: #888; text-decoration: none; }\n    .pk-credit a:hover { text-decoration: underline; }\n    .pk-prev-list { flex: 1; overflow-y: auto; border: 1px solid var(--pk-bd); max-height: 300px; }\n    .pk-prev-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 5px 10px; border-bottom: 1px solid var(--pk-bd); font-size: 12px; }\n    .pk-prev-row:nth-child(odd) { background: var(--pk-hl); }\n\n    .pk-toast-box { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 20000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }\n    .pk-toast { background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: fadein 0.2s, fadeout 0.2s 2.8s forwards; backdrop-filter: blur(4px); display: flex; align-items: center; gap: 8px; }\n    @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }\n    @keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }\n\n    .pk-grid-con { \n        padding: 10px; \n        position: relative; \n        height: 100%;\n        box-sizing: border-box;\n    }\n    \n    .pk-card { \n        position: absolute; \n        border: 1px solid transparent; border-radius: 8px; padding: 8px; cursor: pointer; \n        display: flex; flex-direction: column; align-items: center; gap: 8px; transition: background 0.1s;\n        box-sizing: border-box;\n    }\n    .pk-card:hover { background: var(--pk-hl); }\n    .pk-card.sel { background: var(--pk-sel-bg); border-color: var(--pk-sel-bd); }\n    \n    .pk-card-thumb { \n        width: 100%; height: var(--pk-thumb-h, 110px); \n        background: #f5f5f5; border-radius: 6px; overflow: hidden; \n        display: flex; align-items: center; justify-content: center; \n        flex-shrink: 0;\n    }\n    @media (prefers-color-scheme: dark) { .pk-card-thumb { background: #333; } }\n\n    .pk-card-thumb img { width: 100%; height: 100%; object-fit: cover; }\n    .pk-card-thumb svg { width: 35%; max-width: 90px; height: auto; opacity: 0.35; transition: opacity 0.2s, transform 0.2s ease-out; }\n    .pk-card:hover .pk-card-thumb svg { opacity: 0.7; transform: scale(1.1); }\n    \n    .pk-card-name { \n        font-size: 12px; text-align: center; width: 100%; \n        overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; \n        line-height: 1.3; height: 32px; word-break: break-all;\n    }\n    .pk-card-info { font-size: 11px; color: #888; display: flex; justify-content: space-between; width: 100%; margin-top: 4px; }\n    .pk-card-chk { position: absolute; top: 10px; left: 10px; z-index: 2; transform: scale(1.1); display:none; }\n    .pk-card:hover .pk-card-chk, .pk-card.sel .pk-card-chk { display:block; }\n    \n    .hidden { display: none !important; }\n\n    /* 필터 패널 — 컴팩트 가로 바 */\n    .pk-filter-panel {\n        padding: 8px 16px; border-bottom: 1px solid var(--pk-bd);\n        background: var(--pk-bg); display: none; flex-wrap: wrap; gap: 10px; align-items: center;\n        animation: slideDown 0.12s ease;\n    }\n    .pk-filter-panel.open { display: flex; }\n    @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }\n    .pk-filter-section { display: flex; align-items: center; gap: 6px; }\n    .pk-filter-label { font-size: 13px; font-weight: 600; color: #888; white-space: nowrap; }\n    .pk-filter-chips { display: flex; flex-wrap: wrap; gap: 5px; }\n    .pk-filter-chip {\n        padding: 4px 10px; border-radius: 14px; border: 1px solid var(--pk-bd);\n        background: transparent; color: var(--pk-fg); font-size: 13px; cursor: pointer;\n        transition: all 0.15s; display: flex; align-items: center; gap: 4px; line-height: 1.4;\n    }\n    .pk-filter-chip:hover { border-color: var(--pk-pri); }\n    .pk-filter-chip.active { background: var(--pk-pri); color: #fff; border-color: var(--pk-pri); }\n    .pk-filter-sep { width: 1px; height: 24px; background: var(--pk-bd); flex-shrink: 0; }\n    .pk-filter-row { display: contents; }\n    .pk-filter-half { display: flex; align-items: center; gap: 6px; }\n    .pk-filter-range { display: flex; align-items: center; gap: 5px; }\n    .pk-filter-range input { width: 80px; height: 30px; padding: 0 8px; border: 1px solid var(--pk-bd); border-radius: 4px; background: var(--pk-bg); color: var(--pk-fg); font-size: 13px; }\n    .pk-filter-range input[type="date"] { width: 130px; }\n    .pk-filter-range span { color: #888; font-size: 13px; }\n    .pk-filter-name-row { display: flex; gap: 6px; align-items: center; }\n    .pk-filter-name-row input[type="text"] { width: 110px; height: 30px; padding: 0 8px; border: 1px solid var(--pk-bd); border-radius: 4px; background: var(--pk-bg); color: var(--pk-fg); font-size: 13px; }\n    .pk-filter-regex-label { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #888; white-space: nowrap; cursor: pointer; }\n    .pk-filter-regex-label input { width: 15px; height: 15px; }\n    .pk-filter-actions { display: flex; gap: 6px; margin-left: auto; }\n    .pk-filter-actions .pk-btn { height: 30px; font-size: 13px; padding: 0 14px; }\n    .pk-filter-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--pk-pri); color: #fff; font-size: 10px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px; margin-left: 4px; }\n\n    /* 정렬 드롭다운 */\n    .pk-sort-dropdown { position: relative; display: inline-flex; }\n    .pk-sort-btn { cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: var(--pk-fg); border: 1px solid var(--pk-bd); background: transparent; transition: all 0.15s; }\n    .pk-sort-btn:hover { border-color: var(--pk-pri); background: var(--pk-btn-hov); }\n    .pk-sort-menu { position: absolute; top: 100%; left: 0; z-index: 100; min-width: 140px; background: var(--pk-bg); border: 1px solid var(--pk-bd); border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); padding: 4px 0; display: none; }\n    .pk-sort-menu.open { display: block; }\n    .pk-sort-opt { padding: 6px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--pk-fg); }\n    .pk-sort-opt:hover { background: var(--pk-hl); }\n    .pk-sort-opt.active { color: var(--pk-pri); font-weight: 600; }\n    .pk-sort-opt .pk-sort-dir { margin-left: auto; font-size: 10px; }\n\n    /* ── 사이드바 + 2단 레이아웃 ── */\n    .pk-body { display: flex; flex: 1; overflow: hidden; }\n    .pk-main { display: flex; flex-direction: column; flex: 1; min-width: 0; }\n    .pk-sidebar { width: 240px; min-width: 160px; max-width: 400px; border-right: 1px solid var(--pk-bd); background: var(--pk-bg); display: none; flex-direction: column; overflow: hidden; flex-shrink: 0; }\n    .pk-sidebar.open { display: flex; }\n    .pk-sb-header { padding: 10px 14px; font-weight: 700; font-size: 13px; border-bottom: 1px solid var(--pk-bd); color: var(--pk-fg); user-select: none; }\n    .pk-sb-tree { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 4px 0; scrollbar-width: thin; }\n    .pk-sb-tree::-webkit-scrollbar { width: 5px; }\n    .pk-sb-tree::-webkit-scrollbar-thumb { background: var(--pk-sb-th); border-radius: 3px; }\n\n    .pk-tree-root { list-style: none; padding: 0; margin: 0; }\n    .pk-tree-node { list-style: none; }\n    .pk-tree-children { list-style: none; padding-left: 16px; margin: 0; }\n    .pk-tree-row { display: flex; align-items: center; gap: 4px; padding: 4px 10px; cursor: pointer; border-radius: 4px; margin: 1px 4px; font-size: 13px; color: var(--pk-fg); user-select: none; transition: background 0.1s; white-space: nowrap; }\n    .pk-tree-row:hover { background: var(--pk-hl); }\n    .pk-tree-row.active { background: var(--pk-sel-bg); color: var(--pk-pri); font-weight: 600; }\n    .pk-tree-row.pk-drop-over { background: var(--pk-sel-bg); outline: 2px dashed var(--pk-pri); outline-offset: -2px; }\n    .pk-tree-arrow { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.15s; }\n    .pk-tree-arrow svg { width: 12px; height: 12px; }\n    .pk-tree-icon { display: flex; align-items: center; flex-shrink: 0; }\n    .pk-tree-icon svg { width: 16px; height: 16px; }\n    .pk-tree-name { overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; }\n    .pk-tree-empty { padding: 4px 10px 4px 26px; font-size: 12px; color: #888; font-style: italic; }\n    .pk-tree-spin { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(128,128,128,0.2); border-top-color: var(--pk-pri); border-radius: 50%; animation: spin 0.6s linear infinite; }\n    #pk-sidebar-toggle.active { color: var(--pk-pri); background: var(--pk-hl); }\n\n    /* 드래그앤드롭: 파일 행 드롭 타겟 */\n    .pk-row.pk-drop-over { background: var(--pk-sel-bg); outline: 2px dashed var(--pk-pri); outline-offset: -2px; }\n    .pk-drag-ghost { position: fixed; top: -100px; left: -100px; background: var(--pk-pri); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; pointer-events: none; z-index: 99999; white-space: nowrap; }\n\n    @media (max-width: 768px) {\n        .pk-sidebar { position: absolute; left: 0; top: 0; bottom: 0; z-index: 100; box-shadow: 4px 0 12px rgba(0,0,0,0.15); }\n    }\n\n    .pk-name .pk-name-col { display: flex; flex-direction: column; justify-content: center; overflow: hidden; min-width: 0; flex: 1; }\n    .pk-name .pk-name-col > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }\n    .pk-name .pk-path-sub { font-size: 10px; color: #888; line-height: 1.2; }\n    .pk-dup-filter { height: 26px; padding: 0 6px; border: 1px solid var(--pk-bd); border-radius: 4px; background: var(--pk-bg); color: var(--pk-fg); font-size: 12px; margin-right: 6px; flex-shrink: 0; cursor: pointer; }\n`;
     const UI = {};
     let _overlayEl = null;
+    // 管理器生命周期内所有 document 级监听器都挂到这个 signal 上，
+    // 关闭时一次性 abort，避免反复开关累积监听器（旧闭包复活/CPU 泄漏）
+    let _mgrAbort = null;
+    // 当前 HLS 实例句柄：每次重新播放/切集/切字幕/关闭前销毁旧实例，
+    // 否则旧实例仍绑在被移除的 video 上持续下载分片（内存+网络泄漏）
+    let _currentHls = null;
+    function destroyHls() {
+        if (_currentHls) {
+            try {
+                _currentHls.destroy();
+            } catch (e) { }
+            _currentHls = null;
+        }
+    }
+    // 字幕轨道用的 Blob URL：在切换视频/关闭播放器时统一 revoke，避免内存泄漏
+    let _subBlobUrls = [];
+    function revokeSubBlobs() {
+        _subBlobUrls.forEach(u => {
+            try {
+                URL.revokeObjectURL(u);
+            } catch (e) { }
+        });
+        _subBlobUrls = [];
+    }
     function getOverlayEl() {
         return _overlayEl;
     }
@@ -1251,11 +1286,15 @@
             UI.win.style.top = `${initialTop + dy}px`;
             UI.win.style.margin = "0";
             UI.win.style.transform = "none";
+        }, {
+            signal: _mgrAbort.signal
         });
         document.addEventListener("mouseup", () => {
             isDragging = false;
             document.body.style.userSelect = "";
             hd.style.cursor = "default";
+        }, {
+            signal: _mgrAbort.signal
         });
         const rsDirs = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
         rsDirs.forEach(dir => {
@@ -1899,6 +1938,7 @@
     }
     async function openManager() {
         if (document.querySelector(".pk-ov")) return;
+        _mgrAbort = new AbortController();
         const L = getStrings();
         const lang = getLang();
         const S = {
@@ -2536,6 +2576,7 @@
             });
         }
         async function playVideo(item, extraTracksHtml = "", startAt = 0, forceLang = null) {
+            destroyHls();
             let link = item.web_content_link;
             if (!link || !item.medias) {
                 try {
@@ -2725,7 +2766,9 @@
                     return translatedVtt;
                 };
                 let autoTranslatedText = "";
-                if (!name.toLowerCase().includes(`.${targetLang}.`)) {
+                // 隐私：字幕正文会被发送到 Google 翻译，默认关闭，仅在设置中显式开启后才自动翻译
+                const translateEnabled = gmGet("pk_sub_translate", "false") === "true";
+                if (translateEnabled && !name.toLowerCase().includes(`.${targetLang}.`)) {
                     try {
                         updateLoadTxt(`Translating Subtitle...`);
                         autoTranslatedText = await translateToGoogle(processedText, targetLang);
@@ -2739,16 +2782,19 @@
                     type: "text/vtt"
                 });
                 const origUrl = URL.createObjectURL(originalBlob);
-                let html = `<track kind="captions" label="${originalLang} (${name})" srclang="${originalLang.toLowerCase()}" src="${origUrl}" />\n`;
+                _subBlobUrls.push(origUrl);
+                const safeName = esc(name);
+                let html = `<track kind="captions" label="${originalLang} (${safeName})" srclang="${originalLang.toLowerCase()}" src="${origUrl}" />\n`;
                 if (autoTranslatedText) {
                     const trBlob = new Blob([autoTranslatedText], {
                         type: "text/vtt"
                     });
                     const trUrl = URL.createObjectURL(trBlob);
+                    _subBlobUrls.push(trUrl);
                     const langName = supportedLangs.find(l => l.code === targetLang)?.name || targetLang;
-                    html += `<track kind="captions" label="${langName} (Auto)" srclang="${targetLang}" src="${trUrl}" default />\n`;
+                    html += `<track kind="captions" label="${esc(langName)} (Auto)" srclang="${targetLang}" src="${trUrl}" default />\n`;
                 } else {
-                    html = `<track kind="captions" label="${originalLang} (${name})" srclang="${originalLang.toLowerCase()}" src="${origUrl}" default />\n`;
+                    html = `<track kind="captions" label="${originalLang} (${safeName})" srclang="${originalLang.toLowerCase()}" src="${origUrl}" default />\n`;
                 }
                 return html;
             };
@@ -2902,6 +2948,7 @@
             const HlsFn = getHls();
             if (streamLink.includes(".m3u8") && HlsFn && HlsFn.isSupported()) {
                 const hls = new HlsFn;
+                _currentHls = hls;
                 hls.loadSource(streamLink);
                 hls.attachMedia(vidEl);
                 hls.on(HlsFn.Events.MANIFEST_PARSED, function () {
@@ -2921,6 +2968,8 @@
                 }, 100);
             }
             const closePlayer = () => {
+                destroyHls();
+                revokeSubBlobs();
                 if (player) player.destroy();
                 d.remove();
             };
@@ -2967,9 +3016,6 @@
                     subMenu.style.display = isOpen ? "none" : "block";
                     subBtn.classList.toggle("active", !isOpen);
                 };
-                d.onclick = e => {
-                    if (!subMenu.contains(e.target) && e.target !== subBtn) subMenu.style.display = "none";
-                };
             }
             const extBtn = d.querySelector("#pk-player-ext");
             const extPlayer = gmGet("pk_ext_player", "potplayer");
@@ -2987,7 +3033,7 @@
             };
             d.querySelector(".pk-close-btn").onclick = closePlayer;
             d.onclick = e => {
-                if (e.target === d.firstElementChild) closePlayer(); else if (!subMenu.contains(e.target) && e.target !== subBtn) subMenu.style.display = "none";
+                if (e.target === d.firstElementChild) closePlayer(); else if (subMenu && !subMenu.contains(e.target) && e.target !== subBtn) subMenu.style.display = "none";
             };
         }
         el.tabIndex = 0;
@@ -2998,6 +3044,8 @@
             if (e.key === "Escape") {
                 const player = document.getElementById("pk-player-ov");
                 if (player) {
+                    destroyHls();
+                    revokeSubBlobs();
                     player.remove();
                     return;
                 }
@@ -3009,7 +3057,7 @@
                 if (UI.ctx.style.display === "block") UI.ctx.style.display = "none"; else if (S.sel.size > 0) {
                     S.sel.clear();
                     refresh();
-                } else if (S.path.length === 1) el.remove();
+                } else if (S.path.length === 1) closeManager();
                 return;
             }
             if (e.key === "F2") {
@@ -3071,7 +3119,9 @@
                 }
             }
         };
-        document.addEventListener("keydown", keyHandler);
+        document.addEventListener("keydown", keyHandler, {
+            signal: _mgrAbort.signal
+        });
         const mouseHandler = e => {
             if (!document.querySelector(".pk-ov")) return;
             if (e.button === 3) {
@@ -3086,7 +3136,9 @@
             }
             if (UI.ctx.style.display === "block" && !UI.ctx.contains(e.target)) UI.ctx.style.display = "none";
         };
-        document.addEventListener("mouseup", mouseHandler);
+        document.addEventListener("mouseup", mouseHandler, {
+            signal: _mgrAbort.signal
+        });
         document.addEventListener("mouseenter", e => {
             const t = e.target.closest("[title]");
             if (!t) return;
@@ -3102,11 +3154,19 @@
                     if (header) t.classList.add("tip-down");
                 }
             }
-        }, true);
+        }, {
+            capture: true,
+            signal: _mgrAbort.signal
+        });
         const lassoEl = document.createElement("div");
         lassoEl.className = "pk-lasso";
         lassoEl.style.display = "none";
         document.body.appendChild(lassoEl);
+        const closeManager = () => {
+            el.remove();
+            lassoEl.remove();
+            if (_mgrAbort) _mgrAbort.abort();
+        };
         let lassoActive = false, lassoStartX = 0, lassoStartY = 0, lassoInitSel = new Set;
         UI.vp.addEventListener("mousedown", e => {
             if (e.button !== 0) return;
@@ -3161,6 +3221,8 @@
                 }
             });
             _updateStat();
+        }, {
+            signal: _mgrAbort.signal
         });
         document.addEventListener("mouseup", () => {
             if (lassoActive) {
@@ -3168,6 +3230,8 @@
                 lassoEl.style.display = "none";
                 document.body.style.userSelect = "";
             }
+        }, {
+            signal: _mgrAbort.signal
         });
         if (UI.searchInput) {
             UI.searchInput.oninput = e => {
@@ -3389,6 +3453,8 @@
             } else if (menu && !e.target.closest("#pk-sort-dd")) {
                 menu.classList.remove("open");
             }
+        }, {
+            signal: _mgrAbort.signal
         });
         const _updateFilterBadge = () => {
             const n = countActiveFilters(S.filter);
@@ -3445,7 +3511,7 @@
             if (!name) return;
             const cur = S.path[S.path.length - 1];
             try {
-                await fetch("https://api-drive.mypikpak.com/drive/v1/files", {
+                const res = await fetch("https://api-drive.mypikpak.com/drive/v1/files", {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify({
@@ -3454,6 +3520,7 @@
                         name
                     })
                 });
+                if (!res.ok) throw new Error("API Error " + res.status);
                 load();
             } catch (e) {
                 showAlert("Error: " + e.message);
@@ -3490,7 +3557,7 @@
             const ids = S.clipItems.slice();
             const endpoint = S.clipType === "move" ? "https://api-drive.mypikpak.com/drive/v1/files:batchMove" : "https://api-drive.mypikpak.com/drive/v1/files:batchCopy";
             try {
-                await fetch(endpoint, {
+                const res = await fetch(endpoint, {
                     method: "POST",
                     headers: getHeaders(),
                     body: JSON.stringify({
@@ -3500,6 +3567,7 @@
                         }
                     })
                 });
+                if (!res.ok) throw new Error("API Error " + res.status);
                 S.clipItems = [];
                 S.clipType = "";
                 UI.btnPaste.disabled = true;
@@ -3526,7 +3594,7 @@
                     m.remove();
                     return;
                 }
-                if (S.items.some(i => i.name === newName)) {
+                if (S.items.some(i => i.id !== item.id && i.name === newName && i.parent_id === item.parent_id)) {
                     showAlert(L.msg_name_exists.replace("{n}", newName));
                     return;
                 }
@@ -3571,7 +3639,12 @@
                 const repStr = inpRep.value || "";
                 let idx = 1;
                 const changes = [];
-                const existingNames = new Set(S.items.map(i => i.name));
+                // 按所属文件夹分别建立已有名称集合，避免扁平化/全局搜索时跨目录误判重名
+                const namesByParent = new Map();
+                const nameSetFor = pid => {
+                    if (!namesByParent.has(pid)) namesByParent.set(pid, new Set(S.items.filter(i => i.parent_id === pid).map(i => i.name)));
+                    return namesByParent.get(pid);
+                };
                 let errorMsg = null;
                 for (const id of S.sel) {
                     const item = S.items.find(x => x.id === id);
@@ -3590,6 +3663,7 @@
                     }
                     const finalName = newBase + ext;
                     if (finalName !== item.name) {
+                        const existingNames = nameSetFor(item.parent_id);
                         if (existingNames.has(finalName)) {
                             errorMsg = L.msg_name_exists.replace("{n}", finalName);
                         }
@@ -3640,7 +3714,9 @@
                     showToast(L.msg_bulkrename_done.replace("{n}", count));
                     load();
                 } catch (e) {
-                    showAlert("Rename Error: " + e.message);
+                    // 中途失败：前 count 个已在服务端改名，刷新列表以反映真实状态并告知进度
+                    showAlert(`Rename Error (${count}/${currentChanges.length}): ` + e.message);
+                    load();
                 } finally {
                     setLoad(false);
                     m.remove();
@@ -3736,16 +3812,21 @@
                 }]
             }));
             try {
-                await fetch(ariaUrl, {
+                const res = await fetch(ariaUrl, {
                     method: "POST",
                     body: JSON.stringify(payload),
                     headers: {
                         "Content-Type": "application/json"
                     }
                 });
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                // aria2 批量 JSON-RPC 返回结果数组，失败项带 error 字段——不要一律报成功
+                const result = await res.json().catch(() => null);
+                const failed = Array.isArray(result) ? result.filter(r => r && r.error).length : 0;
+                if (failed > 0) throw new Error(`${failed}/${files.length} rejected`);
                 showAlert(L.msg_aria2_sent.replace("{n}", files.length));
             } catch (e) {
-                showAlert("Aria2 Error. Check Settings.");
+                showAlert("Aria2 Error. Check Settings. (" + e.message + ")");
             }
         };
         UI.btnDel.onclick = async () => {
@@ -3771,24 +3852,13 @@
                         const chunk = allIds.slice(c * CHUNK, (c + 1) * CHUNK);
                         updateLoadTxt(L.loading_batch_delete.replace("{done}", c * CHUNK + chunk.length).replace("{total}", allIds.length));
                         try {
-                            const res = await fetch(`https://api-drive.mypikpak.com/drive/v1/files:batchTrash`, {
-                                method: "POST",
-                                headers: getHeaders(),
-                                body: JSON.stringify({ ids: chunk })
-                            });
-                            if (res.ok) {
-                                succeededIds.push(...chunk);
-                            } else if (res.status === 429) {
-                                await sleep(3000);
-                                c--;
-                                continue;
-                            } else {
-                                failedIds.push(...chunk);
-                                console.error(`batchTrash error: ${res.status} for chunk ${c + 1}/${totalChunks}`);
-                            }
+                            // 复用 apiBatchTrash：有上限的 429 退避重试 + 读取 Retry-After + 解析错误体，
+                            // 取代旧的 c-- 无限重试（服务端持续限流时只能靠手动停止退出）
+                            await apiBatchTrash(chunk);
+                            succeededIds.push(...chunk);
                         } catch (e) {
                             failedIds.push(...chunk);
-                            console.error("batchTrash exception:", e);
+                            console.error("batchTrash failed:", e);
                         }
                         if (c < totalChunks - 1) await sleep(200);
                     }
@@ -3933,7 +4003,8 @@
             const curAriaUrl = gmGet("pk_aria2_url", "");
             const curAriaToken = gmGet("pk_aria2_token", "");
             const curFoldersFirst = S.foldersFirst;
-            const m = showModal(`<h3>${L.modal_settings_title}<div style="font-size:11px;color:#888;font-weight:normal;margin-top:4px;">PikPak File Manager v${version}</div></h3><div class="pk-field"><label>${L.label_lang}</label><select id="set_lang"><option value="ko" ${curLang === "ko" ? "selected" : ""}>한국어</option><option value="en" ${curLang === "en" ? "selected" : ""}>English</option><option value="ja" ${curLang === "ja" ? "selected" : ""}>日本語</option><option value="zh" ${curLang === "zh" ? "selected" : ""}>中文 (简体)</option></select></div><div class="pk-field"><label>${L.label_player}</label><select id="set_player"><option value="potplayer" ${curPlayer === "potplayer" ? "selected" : ""}>PotPlayer</option><option value="vlc" ${curPlayer === "vlc" ? "selected" : ""}>VLC Player</option></select></div><div class="pk-field" style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" id="set_folders_first" ${curFoldersFirst ? "checked" : ""}><label for="set_folders_first" style="cursor:pointer;user-select:none;">${L.label_folders_first}</label></div><div class="pk-field"><label>${L.label_aria2_url}</label><input type="text" id="set_aria_url" name="pk_aria2_addr" autocomplete="off" value="${esc(curAriaUrl)}" placeholder="ws://localhost:6800/jsonrpc"></div><div class="pk-field"><label>${L.label_aria2_token}</label><input type="text" id="set_aria_token" name="pk_aria2_tok" autocomplete="off" value="${esc(curAriaToken)}" placeholder="Empty"></div><div class="pk-modal-act"><button class="pk-btn" id="set_cancel">${L.btn_cancel}</button><button class="pk-btn pri" id="set_save">${L.btn_save}</button></div><div class="pk-credit"><b>제작: 브랜뉴(poihoii)</b><br><a href="https://github.com/poihoii/PikPak_FileManager" target="_blank">https://github.com/poihoii/PikPak_FileManager</a></div>`);
+            const curSubTranslate = gmGet("pk_sub_translate", "false") === "true";
+            const m = showModal(`<h3>${L.modal_settings_title}<div style="font-size:11px;color:#888;font-weight:normal;margin-top:4px;">PikPak File Manager v${version}</div></h3><div class="pk-field"><label>${L.label_lang}</label><select id="set_lang"><option value="ko" ${curLang === "ko" ? "selected" : ""}>한국어</option><option value="en" ${curLang === "en" ? "selected" : ""}>English</option><option value="ja" ${curLang === "ja" ? "selected" : ""}>日本語</option><option value="zh" ${curLang === "zh" ? "selected" : ""}>中文 (简体)</option></select></div><div class="pk-field"><label>${L.label_player}</label><select id="set_player"><option value="potplayer" ${curPlayer === "potplayer" ? "selected" : ""}>PotPlayer</option><option value="vlc" ${curPlayer === "vlc" ? "selected" : ""}>VLC Player</option></select></div><div class="pk-field" style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" id="set_folders_first" ${curFoldersFirst ? "checked" : ""}><label for="set_folders_first" style="cursor:pointer;user-select:none;">${L.label_folders_first}</label></div><div class="pk-field" style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" id="set_sub_translate" ${curSubTranslate ? "checked" : ""}><label for="set_sub_translate" style="cursor:pointer;user-select:none;">${L.label_sub_translate}</label></div><div class="pk-field"><label>${L.label_aria2_url}</label><input type="text" id="set_aria_url" name="pk_aria2_addr" autocomplete="off" value="${esc(curAriaUrl)}" placeholder="ws://localhost:6800/jsonrpc"></div><div class="pk-field"><label>${L.label_aria2_token}</label><input type="text" id="set_aria_token" name="pk_aria2_tok" autocomplete="off" value="${esc(curAriaToken)}" placeholder="Empty"></div><div class="pk-modal-act"><button class="pk-btn" id="set_cancel">${L.btn_cancel}</button><button class="pk-btn pri" id="set_save">${L.btn_save}</button></div><div class="pk-credit"><b>제작: 브랜뉴(poihoii)</b><br><a href="https://github.com/poihoii/PikPak_FileManager" target="_blank">https://github.com/poihoii/PikPak_FileManager</a></div>`);
             m.querySelector("#set_cancel").onclick = () => m.remove();
             m.querySelector("#set_save").onclick = async () => {
                 const newUrl = m.querySelector("#set_aria_url").value.trim();
@@ -3942,6 +4013,7 @@
                 const saveBtn = m.querySelector("#set_save");
                 gmSet("pk_folders_first", newFoldersFirst ? "true" : "false");
                 S.foldersFirst = newFoldersFirst;
+                gmSet("pk_sub_translate", m.querySelector("#set_sub_translate").checked ? "true" : "false");
                 if (!newUrl && !newToken) {
                     gmSet("pk_lang", m.querySelector("#set_lang").value);
                     gmSet("pk_ext_player", m.querySelector("#set_player").value);
@@ -4044,11 +4116,7 @@
             ctx.style.display = "none";
             UI.btnDel.click();
         };
-        UI.btnClose.addEventListener("click", () => {
-            el.remove();
-            document.removeEventListener("keydown", keyHandler);
-            document.removeEventListener("mouseup", mouseHandler);
-        });
+        UI.btnClose.addEventListener("click", closeManager);
         _updateStat();
         load();
     }
