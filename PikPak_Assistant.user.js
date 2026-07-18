@@ -4,7 +4,7 @@
 // @name:zh-CN     PikPak 助手
 // @name:ja        PikPak アシスタント
 // @namespace      https://github.com/yjagh/
-// @version        2.2.2
+// @version        2.3.0
 // @description    PikPak 웹 드라이브를 확장해 빠른 탐색·중복 검사·파일명 일괄 변경·다운로드 기능을 제공하는 고급 파일 관리자.
 // @description:en Enhances PikPak with fast navigation, duplicate scan, bulk rename, and advanced file-management tools.
 // @description:zh-CN 基于 PikPak 网页 API，提供快速浏览、重复文件扫描、批量重命名和高级下载功能的文件管理器。
@@ -239,14 +239,14 @@
         btn_help: "도움말",
         tip_help: "단축키 및 기능 사용법을 확인합니다.",
         modal_help_title: "<b>무엇을 도와드릴까요?</b>",
-        help_desc: `\n<div style="font-size:13px; line-height:1.7; color:var(--pk-fg);">\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🔍 강력한 파일 검색 (Search)</b><br>\n        - <b>목록 필터링</b>: 검색창에 글자를 입력하면 즉시 현재 목록이 필터링됩니다.<br>\n        - <b>전체 검색 (Global)</b>: 단어를 입력하고 <b>Enter</b>를 누르면 전체 드라이브를 뒤져서 파일을 찾아드려요!\n    </div>\n    \n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">📂 모든 파일 한눈에 보기 (Flatten)</b><br>\n        여러 폴더에 흩어진 파일을 한 곳에 모으고 싶을 때 <b>'구조 평면화'</b>를 사용하세요.<br>\n        <span style="color:#888; font-size:12px;">※ 작업 완료 후 '새로고침(F5)'하면 원래 폴더 구조로 돌아갑니다.</span>\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🧹 중복 파일 정리 (Deduplication)</b><br>\n        <b>'중복 검색'</b>을 누르면 이름, 크기, 길이를 비교하여 똑같은 파일을 찾아줍니다.<br>\n        원하는 기준(크기/날짜)으로 파일을 자동 선택한 뒤 삭제하여 용량을 확보하세요.\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🖱️ 우클릭 메뉴 (Context Menu)</b><br>\n        파일이나 폴더 위에서 <b>마우스 오른쪽 클릭</b>을 해보세요.<br>\n        다운로드, 이름 변경, 잘라내기 등 자주 쓰는 긴급 메뉴가 나타납니다.\n    </div>\n    \n    <div>\n        <b style="font-size:14px; color:var(--pk-pri);">⌨️ 편리한 단축키</b>\n        <table class="pk-help-table">\n            <tr><td width="100"><b>F2</b></td><td>파일명 변경 / 일괄 변경</td></tr>\n            <tr><td><b>F5</b></td><td>목록 새로고침 (초기화)</td></tr>\n            <tr><td><b>F8</b></td><td>새 폴더 만들기</td></tr>\n            <tr><td><b>Del</b></td><td>선택 항목 휴지통으로 이동</td></tr>\n            <tr><td><b>Ctrl+A</b></td><td>전체 선택</td></tr>\n            <tr><td><b>Ctrl+C / X</b></td><td>항목 복사 / 이동(잘라내기)</td></tr>\n            <tr><td><b>Ctrl+V</b></td><td>붙여넣기</td></tr>\n            <tr><td><b>Alt+S</b></td><td>환경 설정</td></tr>\n            <tr><td><b>Esc</b></td><td>선택 해제 / 창 닫기</td></tr>\n        </table>\n    </div>\n</div>`,
+        help_desc: `\n<div style="font-size:13px; line-height:1.7; color:var(--pk-fg);">\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🔍 강력한 파일 검색 (Search)</b><br>\n        - <b>목록 필터링</b>: 검색창에 글자를 입력하면 즉시 현재 목록이 필터링됩니다.<br>\n        - <b>전체 검색 (Global)</b>: 단어를 입력하고 <b>Enter</b>를 누르면 전체 드라이브를 뒤져서 파일을 찾아드려요!\n    </div>\n    \n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">📂 모든 파일 한눈에 보기 (Flatten)</b><br>\n        여러 폴더에 흩어진 파일을 한 곳에 모으고 싶을 때 <b>'구조 평면화'</b>를 사용하세요.<br>\n        <span style="color:#888; font-size:12px;">※ 작업 완료 후 '새로고침(F5)'하면 원래 폴더 구조로 돌아갑니다.</span>\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🧹 중복 파일 정리 (Deduplication)</b><br>\n        <b>'중복 검색'</b>을 누르면 이름, 크기, 길이를 비교하여 똑같은 파일을 찾아줍니다.<br>\n        원하는 기준(크기/날짜)으로 파일을 자동 선택한 뒤 삭제하여 용량을 확보하세요.\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🖱️ 우클릭 메뉴 (Context Menu)</b><br>\n        파일이나 폴더 위에서 <b>마우스 오른쪽 클릭</b>을 해보세요.<br>\n        다운로드, 이름 변경, 잘라내기 등 자주 쓰는 긴급 메뉴가 나타납니다.\n    </div>\n    \n    <div>\n        <b style="font-size:14px; color:var(--pk-pri);">⌨️ 편리한 단축키</b>\n        <table class="pk-help-table">\n            <tr><td width="100"><b>F2</b></td><td>파일명 변경 / 일괄 변경</td></tr>\n            <tr><td><b>F5</b></td><td>목록 새로고침 (초기화)</td></tr>\n            <tr><td><b>F8</b></td><td>새 폴더 만들기</td></tr>\n            <tr><td><b>Del</b></td><td>선택 항목 휴지통으로 이동</td></tr>\n            <tr><td><b>Ctrl+A</b></td><td>전체 선택</td></tr>\n            <tr><td><b>Ctrl+C / X</b></td><td>항목 복사 / 이동(잘라내기)</td></tr>\n            <tr><td><b>Ctrl+V</b></td><td>붙여넣기</td></tr>\n            <tr><td><b>Alt+S</b></td><td>환경 설정</td></tr>\n            <tr><td><b>Backspace / Alt+←→</b></td><td>뒤로 / 앞으로 (마우스 옆 버튼도 가능)</td></tr><tr><td><b>🖱️ 드래그</b></td><td>빈 곳 = 범위 선택 · 폴더 위 = 이동</td></tr><tr><td><b>Esc</b></td><td>선택 해제 / 창 닫기</td></tr>\n        </table>\n    </div>\n</div>`,
         btn_view_list: "리스트 보기",
         btn_view_grid: "갤러리 보기",
         btn_link_copy: "주소 복사",
-        tip_link_copy: "선택한 파일의 다운로드 주소를 클립보드에 복사합니다.",
+        tip_link_copy: "PikPak 다운로드 직링크를 복사합니다 (파일을 바로 다운로드).",
         msg_link_copied: "{n}개 파일의 주소가 복사되었습니다.",
         btn_resource_copy: "리소스 링크",
-        tip_resource_copy: "선택한 항목의 원본 리소스 링크를 복사합니다.",
+        tip_resource_copy: "파일을 추가한 원본 소스 링크(마그넷/원본 URL)를 복사합니다.",
         loading_resource_links: "리소스 링크를 가져오는 중... {done}/{total}",
         msg_resource_copied: "{n}개의 고유 링크를 복사했습니다. 링크 없음 {skipped}, 실패 {failed}, 중복 {duplicates}.",
         msg_resource_none: "선택한 항목에서 리소스 링크를 찾을 수 없습니다. 링크 없음 {skipped}, 실패 {failed}.",
@@ -259,6 +259,10 @@
         msg_batch_delete_result: "삭제 완료: {success}개 성공, {failed}개 실패.",
         label_folders_first: "폴더를 항상 위에 표시",
         label_sub_translate: "자막 자동 번역 (Google에 전송)",
+        loading_msgs: ["📂 파일 목록을 불러오고 있어요...", "🔍 PikPak에서 데이터를 가져오는 중...", "⚡ 번개처럼 빠르게 로딩 중!", "🚀 잠시만요, 곧 완료됩니다!", "📡 서버와 통신 중이에요~", "☕ 커피 한 잔 하는 사이에...", "🎬 콘텐츠를 준비하고 있습니다!", "🏗️ 파일 구조를 분석 중...", "✨ 멋진 것들을 준비하고 있어요!"],
+        tip_player_prev: "이전 영상", tip_player_next: "다음 영상", tip_player_shuffle: "랜덤 재생", tip_player_playlist: "재생 목록", tip_player_sub: "자막 설정", btn_player_sub: "자막", tip_player_ext: "외부 플레이어로 열기", tip_player_close: "닫기 (Esc)", lbl_playlist: "재생 목록",
+        loading_subs: "자막 불러오는 중...", loading_translating: "자막 번역 중...", loading_restart_player: "플레이어와 자막 재시작 중...", loading_local_sub: "로컬 자막 불러오는 중...", msg_local_sub_loaded: "로컬 자막을 불러왔습니다!", msg_translate_target: "자동 번역 대상: {lang}", msg_player_fallback: "향상된 플레이어 로드 실패. 기본 플레이어를 사용합니다.",
+        btn_close: "닫기", label_preview: "미리보기", msg_copy_fail: "복사 실패", msg_link_fail: "링크를 가져올 수 없습니다.", msg_done: "완료", msg_error: "오류 발생", err_load: "불러오기 실패", err_search: "검색 오류", err_paste: "붙여넣기 오류", err_rename: "이름 변경 오류", err_generic: "오류",
         col_created: "생성 일자",
         btn_filter: "필터",
         tip_filter: "파일 타입, 크기, 날짜 등 조건으로 필터링합니다.",
@@ -437,14 +441,14 @@
         btn_help: "Help",
         tip_help: "Shows shortcuts and usage instructions.",
         modal_help_title: "Help & Usage",
-        help_desc: `\n<div style="font-size:13px; line-height:1.6; color:var(--pk-fg);">\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🔍 Powerful Search</b><br>\n        - <b>List Filter</b>: Instantly filters the current list as you type.<br>\n        - <b>Global Search</b>: Type a keyword and press <b>Enter</b> to search your entire cloud drive!\n    </div>\n    \n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">📂 Flatten View</b><br>\n        - Retrieves all files buried in subfolders into a single view.<br>\n        - Press 'Refresh (F5)' to restore the original folder structure.<br>\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🧹 Deduplication</b><br>\n        - Compare files by name, size, or duration to find exact or similar copies.<br>\n        - Auto-select duplicates based on size or date to quickly free up space.<br>\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🖱️ Context Menu</b><br>\n        - <b>Right-click</b> on any file or folder to access quick actions.<br>\n        - Includes download, rename, move, and external player options.\n    </div>\n    \n    <div>\n        <b style="font-size:14px; color:var(--pk-pri);">⌨️ Shortcuts</b>\n        <table class="pk-help-table">\n            <tr><td width="100"><b>F2</b></td><td>Rename / Bulk Rename</td></tr>\n            <tr><td><b>F5</b></td><td>Refresh (Reset View)</td></tr>\n            <tr><td><b>F8</b></td><td>New Folder</td></tr>\n            <tr><td><b>Del</b></td><td>Trash selected items</td></tr>\n            <tr><td><b>Ctrl+A</b></td><td>Select All</td></tr>\n            <tr><td><b>Ctrl+C / X</b></td><td>Copy / Cut</td></tr>\n            <tr><td><b>Ctrl+V</b></td><td>Paste</td></tr>\n            <tr><td><b>Alt+S</b></td><td>Settings</td></tr>\n            <tr><td><b>Esc</b></td><td>Deselect / Close</td></tr>\n        </table>\n    </div>\n</div>`,
+        help_desc: `\n<div style="font-size:13px; line-height:1.6; color:var(--pk-fg);">\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🔍 Powerful Search</b><br>\n        - <b>List Filter</b>: Instantly filters the current list as you type.<br>\n        - <b>Global Search</b>: Type a keyword and press <b>Enter</b> to search your entire cloud drive!\n    </div>\n    \n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">📂 Flatten View</b><br>\n        - Retrieves all files buried in subfolders into a single view.<br>\n        - Press 'Refresh (F5)' to restore the original folder structure.<br>\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🧹 Deduplication</b><br>\n        - Compare files by name, size, or duration to find exact or similar copies.<br>\n        - Auto-select duplicates based on size or date to quickly free up space.<br>\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🖱️ Context Menu</b><br>\n        - <b>Right-click</b> on any file or folder to access quick actions.<br>\n        - Includes download, rename, move, and external player options.\n    </div>\n    \n    <div>\n        <b style="font-size:14px; color:var(--pk-pri);">⌨️ Shortcuts</b>\n        <table class="pk-help-table">\n            <tr><td width="100"><b>F2</b></td><td>Rename / Bulk Rename</td></tr>\n            <tr><td><b>F5</b></td><td>Refresh (Reset View)</td></tr>\n            <tr><td><b>F8</b></td><td>New Folder</td></tr>\n            <tr><td><b>Del</b></td><td>Trash selected items</td></tr>\n            <tr><td><b>Ctrl+A</b></td><td>Select All</td></tr>\n            <tr><td><b>Ctrl+C / X</b></td><td>Copy / Cut</td></tr>\n            <tr><td><b>Ctrl+V</b></td><td>Paste</td></tr>\n            <tr><td><b>Alt+S</b></td><td>Settings</td></tr>\n            <tr><td><b>Backspace / Alt+←→</b></td><td>Back / Forward (or mouse side buttons)</td></tr><tr><td><b>🖱️ Drag</b></td><td>Empty area = box-select · onto folder = move</td></tr><tr><td><b>Esc</b></td><td>Deselect / Close</td></tr>\n        </table>\n    </div>\n</div>`,
         btn_view_list: "List View",
         btn_view_grid: "Gallery View",
         btn_link_copy: "Copy Link",
-        tip_link_copy: "Copy direct download links of selected files.",
+        tip_link_copy: "Copy the direct PikPak download link (downloads the file itself).",
         msg_link_copied: "Copied {n} links.",
         btn_resource_copy: "Resource Links",
-        tip_resource_copy: "Copy original resource links of selected items.",
+        tip_resource_copy: "Copy the original source link (magnet / source URL the file came from).",
         loading_resource_links: "Fetching resource links... {done}/{total}",
         msg_resource_copied: "Copied {n} unique links. Missing {skipped}, failed {failed}, duplicates {duplicates}.",
         msg_resource_none: "No resource links found. Missing {skipped}, failed {failed}.",
@@ -457,6 +461,10 @@
         msg_batch_delete_result: "Deletion complete: {success} succeeded, {failed} failed.",
         label_folders_first: "Always show folders on top",
         label_sub_translate: "Auto-translate subtitles (sends to Google)",
+        loading_msgs: ["📂 Loading your file list...", "🔍 Fetching data from PikPak...", "⚡ Loading at lightning speed!", "🚀 Hang tight, almost done!", "📡 Talking to the server...", "☕ Just enough time for a coffee...", "🎬 Preparing your content!", "🏗️ Analyzing the file structure...", "✨ Getting something great ready!"],
+        tip_player_prev: "Previous video", tip_player_next: "Next video", tip_player_shuffle: "Shuffle", tip_player_playlist: "Playlist", tip_player_sub: "Subtitle settings", btn_player_sub: "Subtitles", tip_player_ext: "Open in external player", tip_player_close: "Close (Esc)", lbl_playlist: "Playlist",
+        loading_subs: "Loading subtitles...", loading_translating: "Translating subtitles...", loading_restart_player: "Restarting player & subtitles...", loading_local_sub: "Loading local subtitle...", msg_local_sub_loaded: "Local subtitle loaded!", msg_translate_target: "Auto-translate target: {lang}", msg_player_fallback: "Failed to load enhanced player. Using basic player instead.",
+        btn_close: "Close", label_preview: "Preview", msg_copy_fail: "Copy failed", msg_link_fail: "Could not get the link.", msg_done: "Done", msg_error: "An error occurred", err_load: "Failed to load", err_search: "Search error", err_paste: "Paste error", err_rename: "Rename error", err_generic: "Error",
         col_created: "Created",
         btn_filter: "Filter",
         tip_filter: "Filter by file type, size, date, etc.",
@@ -634,14 +642,14 @@
         btn_help: "ヘルプ",
         tip_help: "ショートカットと使い方を表示します。",
         modal_help_title: "ヘルプと使い方",
-        help_desc: `\n<div style="font-size:13px; line-height:1.6; color:var(--pk-fg);">\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🔍 強力な検索 (Search)</b><br>\n        - <b>リスト抽出</b>: 文字を入力すると即座に現在のリストを絞り込みます。<br>\n        - <b>全体検索</b>: キーワードを入力して <b>Enter</b> を押すと、クラウド内のすべてのファイルを検索します！\n    </div>\n    \n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">📂 構造平坦化 (Flatten)</b><br>\n        - サブフォルダ内のファイルをすべて取得し、一つのリストにまとめて表示します。<br>\n        - 作業終了後は「更新 (F5)」を押して元のフォルダ構造に戻してください。\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🧹 重複整理 (Deduplication)</b><br>\n        - 名前、サイズ、時間を比較して同じファイルを見つけ出します。<br>\n        - サイズや日付で重複ファイルを自動選択し、一括削除して容量を節約できます。\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🖱️ 右クリックメニュー (Context Menu)</b><br>\n        - ファイルやフォルダを<b>右クリック</b>すると、クイックメニューが表示されます。<br>\n        - ダウンロード、名前変更、切り取り、外部プレーヤー再生などが可能です。\n    </div>\n    \n    <div>\n        <b style="font-size:14px; color:var(--pk-pri);">⌨️ 便利なしショートカット</b>\n        <table class="pk-help-table">\n            <tr><td width="100"><b>F2</b></td><td>名前変更 / 一括変更</td></tr>\n            <tr><td><b>F5</b></td><td>リスト更新 (表示リセット)</td></tr>\n            <tr><td><b>F8</b></td><td>新規フォルダ作成</td></tr>\n            <tr><td><b>Del</b></td><td>選択項目をゴミ箱に移動</td></tr>\n            <tr><td><b>Ctrl+A</b></td><td>全選択</td></tr>\n            <tr><td><b>Ctrl+C / X</b></td><td>コピー / 切り取り</td></tr>\n            <tr><td><b>Ctrl+V</b></td><td>貼り付け</td></tr>\n            <tr><td><b>Alt+S</b></td><td>設定 (Settings)</td></tr>\n            <tr><td><b>Esc</b></td><td>選択解除 / 閉じる</td></tr>\n        </table>\n    </div>\n</div>`,
+        help_desc: `\n<div style="font-size:13px; line-height:1.6; color:var(--pk-fg);">\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🔍 強力な検索 (Search)</b><br>\n        - <b>リスト抽出</b>: 文字を入力すると即座に現在のリストを絞り込みます。<br>\n        - <b>全体検索</b>: キーワードを入力して <b>Enter</b> を押すと、クラウド内のすべてのファイルを検索します！\n    </div>\n    \n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">📂 構造平坦化 (Flatten)</b><br>\n        - サブフォルダ内のファイルをすべて取得し、一つのリストにまとめて表示します。<br>\n        - 作業終了後は「更新 (F5)」を押して元のフォルダ構造に戻してください。\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🧹 重複整理 (Deduplication)</b><br>\n        - 名前、サイズ、時間を比較して同じファイルを見つけ出します。<br>\n        - サイズや日付で重複ファイルを自動選択し、一括削除して容量を節約できます。\n    </div>\n\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🖱️ 右クリックメニュー (Context Menu)</b><br>\n        - ファイルやフォルダを<b>右クリック</b>すると、クイックメニューが表示されます。<br>\n        - ダウンロード、名前変更、切り取り、外部プレーヤー再生などが可能です。\n    </div>\n    \n    <div>\n        <b style="font-size:14px; color:var(--pk-pri);">⌨️ 便利なしショートカット</b>\n        <table class="pk-help-table">\n            <tr><td width="100"><b>F2</b></td><td>名前変更 / 一括変更</td></tr>\n            <tr><td><b>F5</b></td><td>リスト更新 (表示リセット)</td></tr>\n            <tr><td><b>F8</b></td><td>新規フォルダ作成</td></tr>\n            <tr><td><b>Del</b></td><td>選択項目をゴミ箱に移動</td></tr>\n            <tr><td><b>Ctrl+A</b></td><td>全選択</td></tr>\n            <tr><td><b>Ctrl+C / X</b></td><td>コピー / 切り取り</td></tr>\n            <tr><td><b>Ctrl+V</b></td><td>貼り付け</td></tr>\n            <tr><td><b>Alt+S</b></td><td>設定 (Settings)</td></tr>\n            <tr><td><b>Backspace / Alt+←→</b></td><td>戻る / 進む (マウスサイドボタンも可)</td></tr><tr><td><b>🖱️ ドラッグ</b></td><td>空白 = 範囲選択 · フォルダ上 = 移動</td></tr><tr><td><b>Esc</b></td><td>選択解除 / 閉じる</td></tr>\n        </table>\n    </div>\n</div>`,
         btn_view_list: "リスト表示",
         btn_view_grid: "ギャラリー表示",
         btn_link_copy: "リンクコピー",
-        tip_link_copy: "選択したファイルのダウンロードリンクをコピーします。",
+        tip_link_copy: "PikPakのダウンロード直リンクをコピーします（ファイルを直接DL）。",
         msg_link_copied: "{n} 個のリンクをコピーしました。",
         btn_resource_copy: "リソースリンク",
-        tip_resource_copy: "選択した項目の元リソースリンクをコピーします。",
+        tip_resource_copy: "追加元の元ソースリンク（マグネット/元URL）をコピーします。",
         loading_resource_links: "リソースリンクを取得中... {done}/{total}",
         msg_resource_copied: "{n} 個のユニークなリンクをコピーしました。リンクなし {skipped}、失敗 {failed}、重複 {duplicates}。",
         msg_resource_none: "リソースリンクが見つかりません。リンクなし {skipped}、失敗 {failed}。",
@@ -654,6 +662,10 @@
         msg_batch_delete_result: "削除完了: {success} 件成功、{failed} 件失敗。",
         label_folders_first: "フォルダを常に上に表示",
         label_sub_translate: "字幕を自動翻訳 (Googleへ送信)",
+        loading_msgs: ["📂 ファイル一覧を読み込んでいます...", "🔍 PikPakからデータを取得中...", "⚡ 光の速さで読み込み中！", "🚀 もう少しで完了します！", "📡 サーバーと通信中です～", "☕ コーヒーでも一杯どうぞ...", "🎬 コンテンツを準備しています！", "🏗️ ファイル構造を分析中...", "✨ 素敵なものを準備中です！"],
+        tip_player_prev: "前の動画", tip_player_next: "次の動画", tip_player_shuffle: "ランダム再生", tip_player_playlist: "再生リスト", tip_player_sub: "字幕設定", btn_player_sub: "字幕", tip_player_ext: "外部プレーヤーで開く", tip_player_close: "閉じる (Esc)", lbl_playlist: "再生リスト",
+        loading_subs: "字幕を読み込み中...", loading_translating: "字幕を翻訳中...", loading_restart_player: "プレーヤーと字幕を再起動中...", loading_local_sub: "ローカル字幕を読み込み中...", msg_local_sub_loaded: "ローカル字幕を読み込みました！", msg_translate_target: "自動翻訳ターゲット: {lang}", msg_player_fallback: "高機能プレーヤーの読み込みに失敗しました。基本プレーヤーを使用します。",
+        btn_close: "閉じる", label_preview: "プレビュー", msg_copy_fail: "コピー失敗", msg_link_fail: "リンクを取得できませんでした。", msg_done: "完了", msg_error: "エラーが発生しました", err_load: "読み込み失敗", err_search: "検索エラー", err_paste: "貼り付けエラー", err_rename: "名前変更エラー", err_generic: "エラー",
         col_created: "作成日",
         btn_filter: "フィルター",
         tip_filter: "ファイルタイプ、サイズ、日付などで絞り込みます。",
@@ -831,14 +843,14 @@
         btn_help: "帮助",
         tip_help: "查看快捷键和功能说明。",
         modal_help_title: "使用说明",
-        help_desc: `\n<div style="font-size:13px; line-height:1.6; color:var(--pk-fg);">\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🔍 搜索 (Search)</b><br>\n        - 即时筛选当前加载的文件列表。<br>\n        - 配合“结构扁平化”功能使用，可实现全盘文件搜索。<br>\n    </div>\n    \n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">📂 结构扁平化 (Flatten)</b><br>\n        - 递归提取所有子文件夹中的文件，并显示在一个列表中。<br>\n        - 管理完成后，请按“刷新 (F5)”返回原始文件夹结构。<br>\n    </div>\n\n    <div style="margin-bottom:20px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🧹 重复整理 (Deduplication)</b><br>\n        - <b>文件大小</b>: 在重复组中保留最大（或最小）的文件，选中其余文件。<br>\n        - <b>上传日期</b>: 保留最早（或最新）上传的文件，选中其余文件。<br>\n    </div>\n    \n    <div>\n        <b style="font-size:14px; color:var(--pk-pri);">⌨️ 快捷键</b>\n        <table class="pk-help-table">\n            <tr><td width="100"><b>F2</b></td><td>重命名 / 批量重命名</td></tr>\n            <tr><td><b>F5</b></td><td>刷新列表</td></tr>\n            <tr><td><b>F8</b></td><td>新建文件夹</td></tr>\n            <tr><td><b>Del</b></td><td>删除选中项 (回收站)</td></tr>\n            <tr><td><b>Ctrl+A</b></td><td>全选</td></tr>\n            <tr><td><b>Ctrl+C/V</b></td><td>复制 / 粘贴</td></tr>\n            <tr><td><b>Alt+S</b></td><td>设置 (Settings)</td></tr>\n            <tr><td><b>Esc</b></td><td>取消选择 / 关闭</td></tr>\n        </table>\n    </div>\n</div>`,
+        help_desc: `\n<div style="font-size:13px; line-height:1.6; color:var(--pk-fg);">\n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🔍 搜索 (Search)</b><br>\n        - 即时筛选当前加载的文件列表。<br>\n        - 配合“结构扁平化”功能使用，可实现全盘文件搜索。<br>\n    </div>\n    \n    <div style="margin-bottom:15px;">\n        <b style="font-size:14px; color:var(--pk-pri);">📂 结构扁平化 (Flatten)</b><br>\n        - 递归提取所有子文件夹中的文件，并显示在一个列表中。<br>\n        - 管理完成后，请按“刷新 (F5)”返回原始文件夹结构。<br>\n    </div>\n\n    <div style="margin-bottom:20px;">\n        <b style="font-size:14px; color:var(--pk-pri);">🧹 重复整理 (Deduplication)</b><br>\n        - <b>文件大小</b>: 在重复组中保留最大（或最小）的文件，选中其余文件。<br>\n        - <b>上传日期</b>: 保留最早（或最新）上传的文件，选中其余文件。<br>\n    </div>\n    \n    <div>\n        <b style="font-size:14px; color:var(--pk-pri);">⌨️ 快捷键</b>\n        <table class="pk-help-table">\n            <tr><td width="100"><b>F2</b></td><td>重命名 / 批量重命名</td></tr>\n            <tr><td><b>F5</b></td><td>刷新列表</td></tr>\n            <tr><td><b>F8</b></td><td>新建文件夹</td></tr>\n            <tr><td><b>Del</b></td><td>删除选中项 (回收站)</td></tr>\n            <tr><td><b>Ctrl+A</b></td><td>全选</td></tr>\n            <tr><td><b>Ctrl+C/V</b></td><td>复制 / 粘贴</td></tr>\n            <tr><td><b>Alt+S</b></td><td>设置 (Settings)</td></tr>\n            <tr><td><b>Backspace / Alt+←→</b></td><td>后退 / 前进（也可用鼠标侧键）</td></tr><tr><td><b>🖱️ 拖拽</b></td><td>空白处 = 框选 · 拖到文件夹 = 移动</td></tr><tr><td><b>Esc</b></td><td>取消选择 / 关闭</td></tr>\n        </table>\n    </div>\n</div>`,
         btn_view_list: "列表视图",
         btn_view_grid: "图库视图",
         btn_link_copy: "复制链接",
-        tip_link_copy: "复制选中文件的下载链接。",
+        tip_link_copy: "复制 PikPak 下载直链（直接下载文件本身）。",
         msg_link_copied: "已复制 {n} 个链接。",
         btn_resource_copy: "复制资源链接",
-        tip_resource_copy: "批量获取选中项目的原始资源链接。",
+        tip_resource_copy: "复制原始来源链接（磁力/文件的原始 URL）。",
         loading_resource_links: "正在获取资源链接... {done}/{total}",
         msg_resource_copied: "已复制 {n} 个唯一资源链接；无链接 {skipped} 项，失败 {failed} 项，重复 {duplicates} 项。",
         msg_resource_none: "选中项目中没有可用的资源链接；无链接 {skipped} 项，失败 {failed} 项。",
@@ -851,6 +863,10 @@
         msg_batch_delete_result: "删除完成：成功 {success} 项，失败 {failed} 项。",
         label_folders_first: "文件夹始终置顶显示",
         label_sub_translate: "字幕自动翻译（发送到 Google）",
+        loading_msgs: ["📂 正在加载文件列表...", "🔍 正在从 PikPak 获取数据...", "⚡ 闪电般加载中！", "🚀 马上就好，请稍候！", "📡 正在与服务器通信～", "☕ 喝杯咖啡的功夫...", "🎬 正在准备内容！", "🏗️ 正在分析文件结构...", "✨ 正在准备精彩内容！"],
+        tip_player_prev: "上一个视频", tip_player_next: "下一个视频", tip_player_shuffle: "随机播放", tip_player_playlist: "播放列表", tip_player_sub: "字幕设置", btn_player_sub: "字幕", tip_player_ext: "用外部播放器打开", tip_player_close: "关闭 (Esc)", lbl_playlist: "播放列表",
+        loading_subs: "正在加载字幕...", loading_translating: "正在翻译字幕...", loading_restart_player: "正在重启播放器和字幕...", loading_local_sub: "正在加载本地字幕...", msg_local_sub_loaded: "已加载本地字幕！", msg_translate_target: "自动翻译目标: {lang}", msg_player_fallback: "增强播放器加载失败，改用基础播放器。",
+        btn_close: "关闭", label_preview: "预览", msg_copy_fail: "复制失败", msg_link_fail: "无法获取链接。", msg_done: "完成", msg_error: "发生错误", err_load: "加载失败", err_search: "搜索错误", err_paste: "粘贴错误", err_rename: "重命名错误", err_generic: "错误",
         col_created: "创建日期",
         btn_filter: "筛选",
         tip_filter: "按文件类型、大小、日期等条件筛选。",
@@ -1268,6 +1284,31 @@
         let isDragging = false, startX, startY;
         let initialLeft, initialTop;
         const hd = el.querySelector(".pk-hd");
+        // 窗口位置/尺寸持久化：与悬浮球位置一致，拖动/缩放后记住，下次打开恢复
+        const saveWinBox = () => {
+            const r = UI.win.getBoundingClientRect();
+            gmSet("pk_win_left", Math.round(r.left));
+            gmSet("pk_win_top", Math.round(r.top));
+            gmSet("pk_win_w", Math.round(r.width));
+            gmSet("pk_win_h", Math.round(r.height));
+        };
+        const applyStoredWinBox = () => {
+            const l = gmGet("pk_win_left", null), t = gmGet("pk_win_top", null);
+            const w = gmGet("pk_win_w", null), h = gmGet("pk_win_h", null);
+            if (w != null && h != null) {
+                UI.win.style.width = Math.max(400, Math.min(parseFloat(w), window.innerWidth)) + "px";
+                UI.win.style.height = Math.max(300, Math.min(parseFloat(h), window.innerHeight)) + "px";
+            }
+            if (l != null && t != null) {
+                // clamp 到可见范围，避免窗口恢复到视口外无法操作
+                const left = Math.max(0, Math.min(parseFloat(l), window.innerWidth - 80));
+                const top = Math.max(0, Math.min(parseFloat(t), window.innerHeight - 40));
+                UI.win.style.left = left + "px";
+                UI.win.style.top = top + "px";
+                UI.win.style.margin = "0";
+                UI.win.style.transform = "none";
+            }
+        };
         hd.addEventListener("mousedown", e => {
             if (e.target.closest(".pk-btn") || e.target.tagName === "INPUT" || e.target.tagName === "BUTTON") return;
             isDragging = true;
@@ -1290,6 +1331,7 @@
             signal: _mgrAbort.signal
         });
         document.addEventListener("mouseup", () => {
+            if (isDragging) saveWinBox();
             isDragging = false;
             document.body.style.userSelect = "";
             hd.style.cursor = "default";
@@ -1331,11 +1373,13 @@
                     document.body.style.userSelect = "";
                     document.removeEventListener("mousemove", mm);
                     document.removeEventListener("mouseup", mu);
+                    saveWinBox();
                 };
                 document.addEventListener("mousemove", mm);
                 document.addEventListener("mouseup", mu);
             });
         });
+        applyStoredWinBox();
         return el;
     }
     function setLoading(b, L) {
@@ -1626,7 +1670,7 @@
                 },
                 done(successMsg) {
                     el.classList.add("pfm-toast-success");
-                    el.querySelector(".pfm-toast-msg").textContent = successMsg || "완료";
+                    el.querySelector(".pfm-toast-msg").textContent = successMsg || getStrings().msg_done;
                     fill.style.width = "100%";
                     setTimeout(() => {
                         el.classList.remove("pfm-toast-visible");
@@ -1635,7 +1679,7 @@
                 },
                 error(errorMsg) {
                     el.classList.add("pfm-toast-error");
-                    el.querySelector(".pfm-toast-msg").textContent = errorMsg || "오류 발생";
+                    el.querySelector(".pfm-toast-msg").textContent = errorMsg || getStrings().msg_error;
                     setTimeout(() => el.remove(), 3e3);
                 }
             };
@@ -2283,7 +2327,7 @@
                     if (stopBtn) stopBtn.onclick = () => {
                         S.loadingNav = false;
                     };
-                    const loadingMsgs = ["📂 파일 목록을 불러오고 있어요...", "🔍 PikPak에서 데이터를 가져오는 중...", "⚡ 번개처럼 빠르게 로딩 중!", "🚀 잠시만요, 곧 완료됩니다!", "📡 서버와 통신 중이에요~", "☕ 커피 한 잔 하는 사이에...", "🎬 콘텐츠를 준비하고 있습니다!", "🏗️ 파일 구조를 분석 중...", "✨ 멋진 것들을 준비하고 있어요!"];
+                    const loadingMsgs = L.loading_msgs || [L.loading_detail];
                     updateLoadTxt(loadingMsgs[Math.floor(Math.random() * loadingMsgs.length)]);
                     S.items = await apiList(cur.id, 1e3, cnt => {
                         updateLoadTxt(L.loading_fetch.replace("{n}", cnt));
@@ -2293,7 +2337,7 @@
             } catch (e) {
                 if (e.message !== "AbortError") {
                     console.error(e);
-                    showAlert("Failed to load: " + e.message);
+                    showAlert(L.err_load + ": " + e.message);
                 }
             } finally {
                 S.loadingNav = false;
@@ -2637,7 +2681,7 @@
                     setLoad(false);
                     usePlyr = false;
                     console.warn("Plyr load failed:", e);
-                    showToast("Failed to load enhanced player. Using basic player instead.");
+                    showToast(L.msg_player_fallback);
                 }
             } else {
                 if (!document.getElementById("pk-plyr-style")) {
@@ -2761,7 +2805,7 @@
                                 translatedVtt += item.block + "\n\n";
                             }
                         }
-                        updateLoadTxt(`Translating Subtitle... ${Math.min(i + BATCH_SIZE, validChunks.length)} / ${validChunks.length}`);
+                        updateLoadTxt(`${L.loading_translating} ${Math.min(i + BATCH_SIZE, validChunks.length)} / ${validChunks.length}`);
                     }
                     return translatedVtt;
                 };
@@ -2770,7 +2814,7 @@
                 const translateEnabled = gmGet("pk_sub_translate", "false") === "true";
                 if (translateEnabled && !name.toLowerCase().includes(`.${targetLang}.`)) {
                     try {
-                        updateLoadTxt(`Translating Subtitle...`);
+                        updateLoadTxt(L.loading_translating);
                         autoTranslatedText = await translateToGoogle(processedText, targetLang);
                     } catch (e) {
                         console.error("Translating failed", e);
@@ -2800,7 +2844,7 @@
             };
             if (subFiles.length > 0 && !extraTracksHtml) {
                 setLoad(true);
-                updateLoadTxt("Loading Subtitles...");
+                updateLoadTxt(L.loading_subs);
                 for (let i = 0; i < subFiles.length; i++) {
                     const sub = subFiles[i];
                     let subLink = sub.web_content_link;
@@ -2844,7 +2888,7 @@
                 playlistHTML += `<div class="pk-pl-item ${isCur ? "active" : ""}" data-idx="${idx}" style="padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid #222;display:flex;align-items:center;gap:8px;color:${isCur ? "var(--pk-pri)" : "#ccc"};background:${isCur ? "rgba(76,194,255,0.08)" : "transparent"};transition:background 0.15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span style="color:#555;font-size:10px;min-width:24px;">${idx + 1}</span><span style="overflow:hidden;text-overflow:ellipsis;">${esc(v.name)}</span></div>`;
             });
             if (!isReuse) {
-                d.innerHTML = `<div style="position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,0.95);display:flex;justify-content:center;align-items:center;">\n                <div style="width:95vw;height:95vh;max-width:1600px;background:#000;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.8);display:flex;flex-direction:column;overflow:hidden;border:1px solid #333;">\n                    <div style="flex:0 0 48px;background:#111;padding:0 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222; z-index: 10;">\n                        <div style="color:#eee;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:12px;min-width:0;flex:1;">\n                            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--pk-pri)" style="flex-shrink:0;"><path d="M8 5v14l11-7z"/></svg>\n                            <span id="pk-player-title" style="overflow:hidden;text-overflow:ellipsis;">${esc(item.name)}</span>\n                            <span style="font-size:11px;color:#555;flex-shrink:0;">${currentVideoIdx >= 0 ? `${currentVideoIdx + 1}/${videoList.length}` : ""}</span>\n                        </div>\n\n                        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">\n                            <div style="display:flex;align-items:center;gap:2px;background:rgba(255,255,255,0.05);border-radius:4px;padding:2px 4px;border:1px solid rgba(255,255,255,0.1);">\n                                <button id="pk-player-prev" title="이전 영상" style="background:none;border:none;color:${hasPrev ? "#ccc" : "#333"};cursor:${hasPrev ? "pointer" : "default"};font-size:16px;padding:4px 6px;transition:all 0.2s;border-radius:3px;" ${hasPrev ? "" : "disabled"}>⏮</button>\n                                <button id="pk-player-next" title="다음 영상" style="background:none;border:none;color:${hasNext ? "#ccc" : "#333"};cursor:${hasNext ? "pointer" : "default"};font-size:16px;padding:4px 6px;transition:all 0.2s;border-radius:3px;" ${hasNext ? "" : "disabled"}>⏭</button>\n                                <button id="pk-player-shuffle" title="랜덤 재생" style="background:none;border:none;color:#666;cursor:pointer;font-size:14px;padding:4px 6px;transition:all 0.2s;border-radius:3px;">🎲</button>\n                                <button id="pk-player-playlist" title="재생 목록" style="background:none;border:none;color:#666;cursor:pointer;font-size:14px;padding:4px 6px;transition:all 0.2s;border-radius:3px;">📃</button>\n                            </div>\n                            <div style="width:1px;height:20px;background:#333;"></div>\n                            <button id="pk-player-sub" title="자막 설정" style="background:none;border:none;color:#888;cursor:pointer;font-size:13px;padding:4px 8px;transition:all 0.2s;border-radius:4px;border:1px solid #333;position:relative;">🔤 자막</button>\n                            <div id="pk-sub-menu" style="display:none;position:absolute;top:48px;right:100px;background:#1a1a1a;border:1px solid #333;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:999;min-width:240px;padding:6px 0;">\n                                <div style="padding:8px 14px;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #222;">${L.lbl_sub_settings}</div>\n                                <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;color:#ccc;transition:background 0.15s;font-size:12px;" id="pk-sub-menu-lang" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">\n                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7l1.62-4.33L19.12 17z"/></svg>\n                                    <span>${L.lbl_sub_lang}:</span>\n                                    <select id="pk-sub-lang-sel" style="background:#222;color:#eee;border:1px solid #444;border-radius:3px;font-size:11px;padding:2px 4px;outline:none;cursor:pointer;flex:1;">\n                                        ${langOptionsHtml}\n                                    </select>\n                                </div>\n                                <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;color:#ccc;font-size:12px;">\n                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.75 12a.75.75 0 0 1-.75.75H4.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 .75.75Zm9 0a.75.75 0 0 1-.75.75h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 .75.75ZM7.5 7a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 7.5 7Zm12 0a.75.75 0 0 1-.75.75H12.75a.75.75 0 0 1 0-1.5h6a.75.75 0 0 1 .75.75Zm-15 10a.75.75 0 0 1-.75.75H3.75a.75.75 0 0 1 0-1.5h.75a.75.75 0 0 1 .75.75Zm14.25 0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75Z" /></svg>\n                                    <span>${L.lbl_sub_size}:</span>\n                                    <input type="range" id="pk-sub-size-sel" min="12" max="48" value="${typeof GM_getValue !== "undefined" ? GM_getValue("pk_sub_size", 20) : 20}" style="flex:1;cursor:pointer;height:2px;accent-color:var(--pk-pri);">\n                                    <span id="pk-sub-size-val" style="min-width:32px;text-align:right;font-size:10px;color:#888;">${typeof GM_getValue !== "undefined" ? GM_getValue("pk_sub_size", 20) : 20}px</span>\n                                </div>\n                                <label style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;color:#ccc;transition:background 0.15s;font-size:12px;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">\n                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>\n                                    <span>${L.lbl_sub_load_local}</span>\n                                    <input type="file" id="pk-local-sub" accept=".srt,.vtt,.ass" style="display:none;" />\n                                </label>\n                            </div>\n                            <button id="pk-player-ext" title="외부 플레이어로 열기" style="background:none;border:none;color:#888;cursor:pointer;font-size:13px;padding:4px 8px;transition:all 0.2s;border-radius:4px;border:1px solid #333;">🖥️</button>\n                            <button class="pk-close-btn" title="닫기 (Esc)" style="color:#aaa;background:none;border:none;font-size:28px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;line-height:1;">×</button>\n                        </div>\n                    </div>\n                    <div style="flex:1;display:flex;overflow:hidden;">\n                        <div style="flex:1;background:#000;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;" id="pk-vid-con">\n                            <video id="pk-plyr-vid" playsinline controls autoplay preload="auto" crossorigin="anonymous" style="width:100%;height:100%;">\n                                ${tracksHtml}\n                            </video>\n                        </div>\n                        <div id="pk-playlist-panel" style="width:280px;background:#0a0a0a;border-left:1px solid #222;display:none;flex-direction:column;flex-shrink:0;">\n                            <div style="padding:10px 14px;border-bottom:1px solid #222;font-size:12px;font-weight:600;color:#888;display:flex;justify-content:space-between;align-items:center;">\n                                <span>🎥 재생 목록 (${videoList.length})</span>\n                            </div>\n                            <div id="pk-playlist-list" style="flex:1;overflow-y:auto;">${playlistHTML}</div>\n                        </div>\n                    </div>\n                </div>\n                <style>\n                    .pk-close-btn:hover{color:#fff}\n                    #pk-player-ov .plyr { width: 100%; height: 100%; }\n                    #pk-player-ov .plyr__video-wrapper { height: 100%; width: 100%; background: #000; }\n                    #pk-player-ov video { max-height: 100%; width: 100%; object-fit: contain; }\n                    #pk-player-ov .plyr__caption { font-size: var(--pk-sub-size, ${typeof GM_getValue !== "undefined" ? GM_getValue("pk_sub_size", 20) : 20}px) !important; text-shadow: 0 0 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.8) !important; }\n                    .pk-sub-load-btn:hover { color: #fff !important; }\n                    #pk-player-prev:not(:disabled):hover, #pk-player-next:not(:disabled):hover { color: #fff !important; background: rgba(255,255,255,0.1); }\n                    #pk-player-shuffle:hover, #pk-player-playlist:hover, #pk-player-ext:hover { color: #fff !important; background: rgba(255,255,255,0.1); }\n                    #pk-player-shuffle.active { color: var(--pk-pri) !important; background: rgba(76,194,255,0.15); }\n                    #pk-player-playlist.active { color: var(--pk-pri) !important; background: rgba(76,194,255,0.15); }\n                    .pk-pl-item:hover { background: rgba(255,255,255,0.06) !important; }\n                    .pk-pl-item.active { font-weight: 600; }\n                    #pk-playlist-panel::-webkit-scrollbar, #pk-playlist-list::-webkit-scrollbar { width: 4px; }\n                    #pk-playlist-list::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }\n                </style>\n            </div>`;
+                d.innerHTML = `<div style="position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,0.95);display:flex;justify-content:center;align-items:center;">\n                <div style="width:95vw;height:95vh;max-width:1600px;background:#000;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.8);display:flex;flex-direction:column;overflow:hidden;border:1px solid #333;">\n                    <div style="flex:0 0 48px;background:#111;padding:0 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222; z-index: 10;">\n                        <div style="color:#eee;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:12px;min-width:0;flex:1;">\n                            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--pk-pri)" style="flex-shrink:0;"><path d="M8 5v14l11-7z"/></svg>\n                            <span id="pk-player-title" style="overflow:hidden;text-overflow:ellipsis;">${esc(item.name)}</span>\n                            <span style="font-size:11px;color:#555;flex-shrink:0;">${currentVideoIdx >= 0 ? `${currentVideoIdx + 1}/${videoList.length}` : ""}</span>\n                        </div>\n\n                        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">\n                            <div style="display:flex;align-items:center;gap:2px;background:rgba(255,255,255,0.05);border-radius:4px;padding:2px 4px;border:1px solid rgba(255,255,255,0.1);">\n                                <button id="pk-player-prev" title="${L.tip_player_prev}" style="background:none;border:none;color:${hasPrev ? "#ccc" : "#333"};cursor:${hasPrev ? "pointer" : "default"};font-size:16px;padding:4px 6px;transition:all 0.2s;border-radius:3px;" ${hasPrev ? "" : "disabled"}>⏮</button>\n                                <button id="pk-player-next" title="${L.tip_player_next}" style="background:none;border:none;color:${hasNext ? "#ccc" : "#333"};cursor:${hasNext ? "pointer" : "default"};font-size:16px;padding:4px 6px;transition:all 0.2s;border-radius:3px;" ${hasNext ? "" : "disabled"}>⏭</button>\n                                <button id="pk-player-shuffle" title="${L.tip_player_shuffle}" style="background:none;border:none;color:#666;cursor:pointer;font-size:14px;padding:4px 6px;transition:all 0.2s;border-radius:3px;">🎲</button>\n                                <button id="pk-player-playlist" title="${L.tip_player_playlist}" style="background:none;border:none;color:#666;cursor:pointer;font-size:14px;padding:4px 6px;transition:all 0.2s;border-radius:3px;">📃</button>\n                            </div>\n                            <div style="width:1px;height:20px;background:#333;"></div>\n                            <button id="pk-player-sub" title="${L.tip_player_sub}" style="background:none;border:none;color:#888;cursor:pointer;font-size:13px;padding:4px 8px;transition:all 0.2s;border-radius:4px;border:1px solid #333;position:relative;">🔤 ${L.btn_player_sub}</button>\n                            <div id="pk-sub-menu" style="display:none;position:absolute;top:48px;right:100px;background:#1a1a1a;border:1px solid #333;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:999;min-width:240px;padding:6px 0;">\n                                <div style="padding:8px 14px;font-size:11px;color:#666;font-weight:600;border-bottom:1px solid #222;">${L.lbl_sub_settings}</div>\n                                <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;color:#ccc;transition:background 0.15s;font-size:12px;" id="pk-sub-menu-lang" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">\n                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7l1.62-4.33L19.12 17z"/></svg>\n                                    <span>${L.lbl_sub_lang}:</span>\n                                    <select id="pk-sub-lang-sel" style="background:#222;color:#eee;border:1px solid #444;border-radius:3px;font-size:11px;padding:2px 4px;outline:none;cursor:pointer;flex:1;">\n                                        ${langOptionsHtml}\n                                    </select>\n                                </div>\n                                <div style="padding:8px 14px;display:flex;align-items:center;gap:8px;color:#ccc;font-size:12px;">\n                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.75 12a.75.75 0 0 1-.75.75H4.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 .75.75Zm9 0a.75.75 0 0 1-.75.75h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 .75.75ZM7.5 7a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 7.5 7Zm12 0a.75.75 0 0 1-.75.75H12.75a.75.75 0 0 1 0-1.5h6a.75.75 0 0 1 .75.75Zm-15 10a.75.75 0 0 1-.75.75H3.75a.75.75 0 0 1 0-1.5h.75a.75.75 0 0 1 .75.75Zm14.25 0a.75.75 0 0 1-.75.75H9.75a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 .75.75Z" /></svg>\n                                    <span>${L.lbl_sub_size}:</span>\n                                    <input type="range" id="pk-sub-size-sel" min="12" max="48" value="${typeof GM_getValue !== "undefined" ? GM_getValue("pk_sub_size", 20) : 20}" style="flex:1;cursor:pointer;height:2px;accent-color:var(--pk-pri);">\n                                    <span id="pk-sub-size-val" style="min-width:32px;text-align:right;font-size:10px;color:#888;">${typeof GM_getValue !== "undefined" ? GM_getValue("pk_sub_size", 20) : 20}px</span>\n                                </div>\n                                <label style="padding:8px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;color:#ccc;transition:background 0.15s;font-size:12px;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">\n                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>\n                                    <span>${L.lbl_sub_load_local}</span>\n                                    <input type="file" id="pk-local-sub" accept=".srt,.vtt,.ass" style="display:none;" />\n                                </label>\n                            </div>\n                            <button id="pk-player-ext" title="${L.tip_player_ext}" style="background:none;border:none;color:#888;cursor:pointer;font-size:13px;padding:4px 8px;transition:all 0.2s;border-radius:4px;border:1px solid #333;">🖥️</button>\n                            <button class="pk-close-btn" title="${L.tip_player_close}" style="color:#aaa;background:none;border:none;font-size:28px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;transition:color 0.2s;line-height:1;">×</button>\n                        </div>\n                    </div>\n                    <div style="flex:1;display:flex;overflow:hidden;">\n                        <div style="flex:1;background:#000;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;" id="pk-vid-con">\n                            <video id="pk-plyr-vid" playsinline controls autoplay preload="auto" crossorigin="anonymous" style="width:100%;height:100%;">\n                                ${tracksHtml}\n                            </video>\n                        </div>\n                        <div id="pk-playlist-panel" style="width:280px;background:#0a0a0a;border-left:1px solid #222;display:none;flex-direction:column;flex-shrink:0;">\n                            <div style="padding:10px 14px;border-bottom:1px solid #222;font-size:12px;font-weight:600;color:#888;display:flex;justify-content:space-between;align-items:center;">\n                                <span>🎥 ${L.lbl_playlist} (${videoList.length})</span>\n                            </div>\n                            <div id="pk-playlist-list" style="flex:1;overflow-y:auto;">${playlistHTML}</div>\n                        </div>\n                    </div>\n                </div>\n                <style>\n                    .pk-close-btn:hover{color:#fff}\n                    #pk-player-ov .plyr { width: 100%; height: 100%; }\n                    #pk-player-ov .plyr__video-wrapper { height: 100%; width: 100%; background: #000; }\n                    #pk-player-ov video { max-height: 100%; width: 100%; object-fit: contain; }\n                    #pk-player-ov .plyr__caption { font-size: var(--pk-sub-size, ${typeof GM_getValue !== "undefined" ? GM_getValue("pk_sub_size", 20) : 20}px) !important; text-shadow: 0 0 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.8) !important; }\n                    .pk-sub-load-btn:hover { color: #fff !important; }\n                    #pk-player-prev:not(:disabled):hover, #pk-player-next:not(:disabled):hover { color: #fff !important; background: rgba(255,255,255,0.1); }\n                    #pk-player-shuffle:hover, #pk-player-playlist:hover, #pk-player-ext:hover { color: #fff !important; background: rgba(255,255,255,0.1); }\n                    #pk-player-shuffle.active { color: var(--pk-pri) !important; background: rgba(76,194,255,0.15); }\n                    #pk-player-playlist.active { color: var(--pk-pri) !important; background: rgba(76,194,255,0.15); }\n                    .pk-pl-item:hover { background: rgba(255,255,255,0.06) !important; }\n                    .pk-pl-item.active { font-weight: 600; }\n                    #pk-playlist-panel::-webkit-scrollbar, #pk-playlist-list::-webkit-scrollbar { width: 4px; }\n                    #pk-playlist-list::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }\n                </style>\n            </div>`;
             } else {
                 d.querySelector("#pk-player-title").textContent = item.name;
                 d.querySelector("#pk-player-title").nextElementSibling.textContent = currentVideoIdx >= 0 ? `${currentVideoIdx + 1}/${videoList.length}` : "";
@@ -2887,10 +2931,10 @@
                 const newLang = e.target.value;
                 targetLang = newLang;
                 if (typeof GM_setValue !== "undefined") GM_setValue("pk_sub_lang", newLang);
-                showToast(`Auto Translate Target: ${e.target.options[e.target.selectedIndex].text}`);
+                showToast(L.msg_translate_target.replace("{lang}", e.target.options[e.target.selectedIndex].text));
                 const curTime = player ? player.currentTime : vidEl.currentTime;
                 setLoad(true);
-                updateLoadTxt("Restarting Player & Subtitles...");
+                updateLoadTxt(L.loading_restart_player);
                 setTimeout(() => {
                     if (player) player.destroy();
                     playVideo(item, "", curTime, newLang);
@@ -2903,7 +2947,7 @@
                     if (!file) return;
                     try {
                         setLoad(true);
-                        updateLoadTxt(`Loading Local Sub...`);
+                        updateLoadTxt(L.loading_local_sub);
                         const text = await file.text();
                         const html = await processSubFile(text, file.name, true);
                         let existingTracksHtml = "";
@@ -2911,7 +2955,7 @@
                         const curTime = player ? player.currentTime : vidEl.currentTime;
                         if (player) player.destroy();
                         playVideo(item, existingTracksHtml + "\n" + html, curTime);
-                        showToast("Local Subtitle Loaded!");
+                        showToast(L.msg_local_sub_loaded);
                     } catch (err) { } finally {
                         setLoad(false);
                     }
@@ -3295,7 +3339,7 @@
                             refresh();
                         }
                     } catch (err) {
-                        showAlert("Search error: " + err.message);
+                        showAlert(L.err_search + ": " + err.message);
                     } finally {
                         S.scanning = false;
                         setLoad(false);
@@ -3304,7 +3348,7 @@
             };
         }
         UI.btnHelp.onclick = () => {
-            const m = showModal(`\n            <h3 style="margin-bottom:16px;">${L.modal_help_title}</h3>\n            <div style="max-height:70vh;overflow-y:auto;font-size:13px;line-height:1.7;">\n                ${L.help_desc}\n            </div>\n            <div class="pk-modal-act" style="margin-top:20px;"><button class="pk-btn pri" id="help_close" style="width:100%;justify-content:center;height:40px;">닫기</button></div>\n        `);
+            const m = showModal(`\n            <h3 style="margin-bottom:16px;">${L.modal_help_title}</h3>\n            <div style="max-height:70vh;overflow-y:auto;font-size:13px;line-height:1.7;">\n                ${L.help_desc}\n            </div>\n            <div class="pk-modal-act" style="margin-top:20px;"><button class="pk-btn pri" id="help_close" style="width:100%;justify-content:center;height:40px;">${L.btn_close}</button></div>\n        `);
             m.querySelector("#help_close").onclick = () => m.remove();
         };
         UI.scan.onclick = async () => {
@@ -3351,7 +3395,7 @@
                     refresh();
                 }
             } catch (e) {
-                showAlert("Error: " + e.message);
+                showAlert(L.err_generic + ": " + e.message);
             } finally {
                 S.scanning = false;
                 setLoad(false);
@@ -3523,7 +3567,7 @@
                 if (!res.ok) throw new Error("API Error " + res.status);
                 load();
             } catch (e) {
-                showAlert("Error: " + e.message);
+                showAlert(L.err_generic + ": " + e.message);
             }
         };
         UI.btnCopy.onclick = () => {
@@ -3575,7 +3619,7 @@
                 setLoad(false);
                 await load();
             } catch (e) {
-                showAlert("Paste error: " + e.message);
+                showAlert(L.err_paste + ": " + e.message);
                 setLoad(false);
             }
         };
@@ -3608,7 +3652,7 @@
                     setLoad(false);
                     load();
                 } catch (e) {
-                    showAlert("Error: " + e.message);
+                    showAlert(L.err_generic + ": " + e.message);
                     setLoad(false);
                 }
             };
@@ -3624,7 +3668,7 @@
         };
         UI.btnBulkRename.onclick = () => {
             if (S.sel.size < 2) return;
-            const m = showModal(`<h3>${L.modal_rename_multi_title}</h3><div class="pk-field"><label><input type="radio" name="rn_mode" value="pattern" checked> ${L.label_pattern}</label><input type="text" id="rn_pattern" value="Video {n}" placeholder="Video {n}"></div><div class="pk-field" style="margin-top:10px"><label><input type="radio" name="rn_mode" value="replace"> ${L.label_replace} <span style="font-size:11px;color:#888">${L.label_replace_note}</span></label><input type="text" id="rn_find" placeholder="${L.placeholder_find}" disabled><input type="text" id="rn_rep" placeholder="${L.placeholder_replace}" disabled></div><div style="margin-top: 15px; border: 1px solid var(--pk-bd); border-radius: 4px; max-height: 200px; display: flex; flex-direction: column; overflow: hidden; background: var(--pk-bg);"><div style="padding: 6px 10px; border-bottom: 1px solid var(--pk-bd); background: var(--pk-gh); font-size: 12px; font-weight: bold; flex-shrink: 0; color: var(--pk-gh-fg);">미리보기 (Preview)</div><div id="rn_live_preview" style="padding: 6px 10px; font-size: 11px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;"></div></div><div class="pk-modal-act" style="margin-top: 15px;"><button class="pk-btn" id="rn_cancel">${L.btn_cancel}</button><button class="pk-btn pri" id="rn_confirm">${L.btn_confirm}</button></div>`);
+            const m = showModal(`<h3>${L.modal_rename_multi_title}</h3><div class="pk-field"><label><input type="radio" name="rn_mode" value="pattern" checked> ${L.label_pattern}</label><input type="text" id="rn_pattern" value="Video {n}" placeholder="Video {n}"></div><div class="pk-field" style="margin-top:10px"><label><input type="radio" name="rn_mode" value="replace"> ${L.label_replace} <span style="font-size:11px;color:#888">${L.label_replace_note}</span></label><input type="text" id="rn_find" placeholder="${L.placeholder_find}" disabled><input type="text" id="rn_rep" placeholder="${L.placeholder_replace}" disabled></div><div style="margin-top: 15px; border: 1px solid var(--pk-bd); border-radius: 4px; max-height: 200px; display: flex; flex-direction: column; overflow: hidden; background: var(--pk-bg);"><div style="padding: 6px 10px; border-bottom: 1px solid var(--pk-bd); background: var(--pk-gh); font-size: 12px; font-weight: bold; flex-shrink: 0; color: var(--pk-gh-fg);">${L.label_preview}</div><div id="rn_live_preview" style="padding: 6px 10px; font-size: 11px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;"></div></div><div class="pk-modal-act" style="margin-top: 15px;"><button class="pk-btn" id="rn_cancel">${L.btn_cancel}</button><button class="pk-btn pri" id="rn_confirm">${L.btn_confirm}</button></div>`);
             const radios = m.querySelectorAll('input[name="rn_mode"]');
             const inpPattern = m.querySelector("#rn_pattern");
             const inpFind = m.querySelector("#rn_find");
@@ -3715,7 +3759,7 @@
                     load();
                 } catch (e) {
                     // 中途失败：前 count 个已在服务端改名，刷新列表以反映真实状态并告知进度
-                    showAlert(`Rename Error (${count}/${currentChanges.length}): ` + e.message);
+                    showAlert(`${L.err_rename} (${count}/${currentChanges.length}): ` + e.message);
                     load();
                 } finally {
                     setLoad(false);
@@ -3727,7 +3771,7 @@
         UI.btnExt.onclick = async () => {
             const player = gmGet("pk_ext_player", "potplayer");
             if (S.sel.size === 0) {
-                showToast(L.msg_no_selection || "선택된 항목이 없습니다.");
+                showToast(L.msg_no_selection);
                 return;
             }
             if (S.sel.size > 1) {
@@ -3826,7 +3870,7 @@
                 if (failed > 0) throw new Error(`${failed}/${files.length} rejected`);
                 showAlert(L.msg_aria2_sent.replace("{n}", files.length));
             } catch (e) {
-                showAlert("Aria2 Error. Check Settings. (" + e.message + ")");
+                showAlert(L.err_generic + ": Aria2 - " + e.message);
             }
         };
         UI.btnDel.onclick = async () => {
@@ -3904,7 +3948,7 @@
         if (UI.btnLinkCopy) {
             UI.btnLinkCopy.onclick = async () => {
                 if (S.sel.size === 0) {
-                    showToast(L.msg_no_selection || "선택된 항목이 없습니다.");
+                    showToast(L.msg_no_selection);
                     return;
                 }
                 setLoad(true);
@@ -3923,7 +3967,7 @@
                     showToast(L.msg_link_copied.replace("{n}", links.length));
                 } catch (e) {
                     console.error(e);
-                    showToast("복사 실패");
+                    showToast(L.msg_copy_fail);
                 } finally {
                     setLoad(false);
                 }
@@ -3960,7 +4004,7 @@
                     showToast(L.msg_resource_copied.replace("{n}", values.n).replace("{skipped}", values.skipped).replace("{failed}", values.failed).replace("{duplicates}", values.duplicates));
                 } catch (e) {
                     console.error(e);
-                    showToast(e?.message || "Failed to copy resource links.");
+                    showToast(e?.message || L.err_generic);
                 } finally {
                     setLoad(false);
                 }
@@ -4004,58 +4048,67 @@
             const curAriaToken = gmGet("pk_aria2_token", "");
             const curFoldersFirst = S.foldersFirst;
             const curSubTranslate = gmGet("pk_sub_translate", "false") === "true";
-            const m = showModal(`<h3>${L.modal_settings_title}<div style="font-size:11px;color:#888;font-weight:normal;margin-top:4px;">PikPak File Manager v${version}</div></h3><div class="pk-field"><label>${L.label_lang}</label><select id="set_lang"><option value="ko" ${curLang === "ko" ? "selected" : ""}>한국어</option><option value="en" ${curLang === "en" ? "selected" : ""}>English</option><option value="ja" ${curLang === "ja" ? "selected" : ""}>日本語</option><option value="zh" ${curLang === "zh" ? "selected" : ""}>中文 (简体)</option></select></div><div class="pk-field"><label>${L.label_player}</label><select id="set_player"><option value="potplayer" ${curPlayer === "potplayer" ? "selected" : ""}>PotPlayer</option><option value="vlc" ${curPlayer === "vlc" ? "selected" : ""}>VLC Player</option></select></div><div class="pk-field" style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" id="set_folders_first" ${curFoldersFirst ? "checked" : ""}><label for="set_folders_first" style="cursor:pointer;user-select:none;">${L.label_folders_first}</label></div><div class="pk-field" style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" id="set_sub_translate" ${curSubTranslate ? "checked" : ""}><label for="set_sub_translate" style="cursor:pointer;user-select:none;">${L.label_sub_translate}</label></div><div class="pk-field"><label>${L.label_aria2_url}</label><input type="text" id="set_aria_url" name="pk_aria2_addr" autocomplete="off" value="${esc(curAriaUrl)}" placeholder="ws://localhost:6800/jsonrpc"></div><div class="pk-field"><label>${L.label_aria2_token}</label><input type="text" id="set_aria_token" name="pk_aria2_tok" autocomplete="off" value="${esc(curAriaToken)}" placeholder="Empty"></div><div class="pk-modal-act"><button class="pk-btn" id="set_cancel">${L.btn_cancel}</button><button class="pk-btn pri" id="set_save">${L.btn_save}</button></div><div class="pk-credit"><b>제작: 브랜뉴(poihoii)</b><br><a href="https://github.com/poihoii/PikPak_FileManager" target="_blank">https://github.com/poihoii/PikPak_FileManager</a></div>`);
+            const m = showModal(`<h3>${L.modal_settings_title}<div style="font-size:11px;color:#888;font-weight:normal;margin-top:4px;">PikPak Assistant v${version}</div></h3><div class="pk-field"><label>${L.label_lang}</label><select id="set_lang"><option value="ko" ${curLang === "ko" ? "selected" : ""}>한국어</option><option value="en" ${curLang === "en" ? "selected" : ""}>English</option><option value="ja" ${curLang === "ja" ? "selected" : ""}>日本語</option><option value="zh" ${curLang === "zh" ? "selected" : ""}>中文 (简体)</option></select></div><div class="pk-field"><label>${L.label_player}</label><select id="set_player"><option value="potplayer" ${curPlayer === "potplayer" ? "selected" : ""}>PotPlayer</option><option value="vlc" ${curPlayer === "vlc" ? "selected" : ""}>VLC Player</option></select></div><div class="pk-field" style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" id="set_folders_first" ${curFoldersFirst ? "checked" : ""}><label for="set_folders_first" style="cursor:pointer;user-select:none;">${L.label_folders_first}</label></div><div class="pk-field" style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" id="set_sub_translate" ${curSubTranslate ? "checked" : ""}><label for="set_sub_translate" style="cursor:pointer;user-select:none;">${L.label_sub_translate}</label></div><div class="pk-field"><label>${L.label_aria2_url}</label><input type="text" id="set_aria_url" name="pk_aria2_addr" autocomplete="off" value="${esc(curAriaUrl)}" placeholder="ws://localhost:6800/jsonrpc"></div><div class="pk-field"><label>${L.label_aria2_token}</label><input type="text" id="set_aria_token" name="pk_aria2_tok" autocomplete="off" value="${esc(curAriaToken)}" placeholder="Empty"></div><div class="pk-modal-act"><button class="pk-btn" id="set_cancel">${L.btn_cancel}</button><button class="pk-btn pri" id="set_save">${L.btn_save}</button></div><div class="pk-credit"><b>제작: 브랜뉴(poihoii)</b><br><a href="https://github.com/poihoii/PikPak_FileManager" target="_blank">https://github.com/poihoii/PikPak_FileManager</a></div>`);
             m.querySelector("#set_cancel").onclick = () => m.remove();
             m.querySelector("#set_save").onclick = async () => {
+                const saveBtn = m.querySelector("#set_save");
+                const newLang = m.querySelector("#set_lang").value;
+                const newPlayer = m.querySelector("#set_player").value;
+                const newFoldersFirst = m.querySelector("#set_folders_first").checked;
+                const newSubTranslate = m.querySelector("#set_sub_translate").checked;
                 const newUrl = m.querySelector("#set_aria_url").value.trim();
                 const newToken = m.querySelector("#set_aria_token").value.trim();
-                const newFoldersFirst = m.querySelector("#set_folders_first").checked;
-                const saveBtn = m.querySelector("#set_save");
+                const langChanged = newLang !== curLang;
+                const foldersChanged = newFoldersFirst !== S.foldersFirst;
+                // 所有设置无条件、独立保存——aria2 连不上也不影响语言/播放器等其它设置
+                gmSet("pk_lang", newLang);
+                gmSet("pk_ext_player", newPlayer);
                 gmSet("pk_folders_first", newFoldersFirst ? "true" : "false");
+                gmSet("pk_sub_translate", newSubTranslate ? "true" : "false");
+                gmSet("pk_aria2_url", newUrl);
+                gmSet("pk_aria2_token", newToken);
                 S.foldersFirst = newFoldersFirst;
-                gmSet("pk_sub_translate", m.querySelector("#set_sub_translate").checked ? "true" : "false");
-                if (!newUrl && !newToken) {
-                    gmSet("pk_lang", m.querySelector("#set_lang").value);
-                    gmSet("pk_ext_player", m.querySelector("#set_player").value);
-                    gmSet("pk_aria2_url", "");
-                    gmSet("pk_aria2_token", "");
-                    showAlert(L.msg_settings_saved).then(() => location.reload());
-                    return;
-                }
-                saveBtn.disabled = true;
-                saveBtn.textContent = "...";
-                try {
-                    const payload = {
-                        jsonrpc: "2.0",
-                        method: "aria2.getVersion",
-                        id: "pk_test",
-                        params: [`token:${newToken}`]
-                    };
-                    let testUrl = newUrl || "ws://localhost:6800/jsonrpc";
-                    let fetchUrl = testUrl;
-                    if (fetchUrl.startsWith("ws")) fetchUrl = fetchUrl.replace("ws", "http");
-                    const res = await fetch(fetchUrl, {
-                        method: "POST",
-                        body: JSON.stringify(payload),
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    });
-                    if (!res.ok) throw new Error("Network Error");
-                    const data = await res.json();
-                    if (data.error) throw new Error(data.error.message);
-                    gmSet("pk_lang", m.querySelector("#set_lang").value);
-                    gmSet("pk_ext_player", m.querySelector("#set_player").value);
-                    gmSet("pk_aria2_url", newUrl);
-                    gmSet("pk_aria2_token", newToken);
-                    await showAlert(L.msg_settings_saved);
-                    location.reload();
-                } catch (e) {
-                    console.error(e);
-                    showAlert(L.msg_aria2_check_fail);
+                // aria2 仅做可选的连通性检查：失败只提示，不回滚已保存的配置
+                let aria2Warn = false;
+                if (newUrl || newToken) {
+                    saveBtn.disabled = true;
+                    saveBtn.textContent = "...";
+                    try {
+                        const payload = {
+                            jsonrpc: "2.0",
+                            method: "aria2.getVersion",
+                            id: "pk_test",
+                            params: [`token:${newToken}`]
+                        };
+                        let fetchUrl = newUrl || "ws://localhost:6800/jsonrpc";
+                        if (fetchUrl.startsWith("ws")) fetchUrl = fetchUrl.replace("ws", "http");
+                        const res = await fetch(fetchUrl, {
+                            method: "POST",
+                            body: JSON.stringify(payload),
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        });
+                        if (!res.ok) throw new Error("Network Error");
+                        const data = await res.json();
+                        if (data.error) throw new Error(data.error.message);
+                    } catch (e) {
+                        console.error(e);
+                        aria2Warn = true;
+                    }
                     saveBtn.disabled = false;
                     saveBtn.textContent = L.btn_save;
                 }
+                m.remove();
+                // 只有语言变更需要重建整个 UI；其它设置即时/下次生效，避免无谓的整页刷新
+                if (langChanged) {
+                    await showAlert(L.msg_settings_saved);
+                    location.reload();
+                    return;
+                }
+                if (foldersChanged) refresh();
+                showToast(L.msg_settings_saved);
+                if (aria2Warn) showAlert(L.msg_aria2_check_fail);
             };
         };
         const ctx = el.querySelector("#pk-ctx");
@@ -4090,7 +4143,7 @@
                 } catch (e) { }
             }
             if (!link) {
-                showToast("링크를 가져올 수 없습니다.");
+                showToast(L.msg_link_fail);
                 return;
             }
             const extPlayer = gmGet("pk_ext_player", "system");
@@ -4139,7 +4192,7 @@
         if (document.getElementById("pk-launch")) return;
         const b = document.createElement("button");
         b.id = "pk-launch";
-        b.style.cssText = `position:fixed;bottom:20px;right:20px;width:50px;height:50px;border-radius:50%;background:#1a5eff;border:none;cursor:pointer;z-index:2147483647;box-shadow:0 4px 12px rgba(0,0,0,0.3);padding:0;overflow:hidden;transition:transform 0.1s;display:flex!important;align-items:center!important;justify-content:center!important;`;
+        b.style.cssText = `position:fixed;bottom:20px;right:20px;width:50px;height:50px;border-radius:50%;background:#1a5eff;border:none;cursor:pointer;z-index:2147483647;box-shadow:0 4px 12px rgba(0,0,0,0.3);padding:0;overflow:hidden;opacity:0.6;transition:transform 0.1s,opacity 0.2s;display:flex!important;align-items:center!important;justify-content:center!important;`;
         b.innerHTML = `<svg width="60%" height="60%" viewBox="0 0 238 200" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M0 0 C1.82724609 0.01353516 1.82724609 0.01353516 3.69140625 0.02734375 C4.59761719 0.03894531 5.50382812 0.05054688 6.4375 0.0625 C5.95097979 7.11704304 4.33696858 12.90149479 1.6875 19.4375 C1.35234375 20.32566406 1.0171875 21.21382812 0.671875 22.12890625 C0.3315625 22.98097656 -0.00875 23.83304688 -0.359375 24.7109375 C-0.66198242 25.47583496 -0.96458984 26.24073242 -1.27636719 27.02880859 C-3.01571023 29.77913653 -4.60880008 30.70366989 -7.5625 32.0625 C-10.93383789 32.72265625 -10.93383789 32.72265625 -14.78515625 33.125 C-15.47874237 33.20142731 -16.17232849 33.27785461 -16.88693237 33.3565979 C-18.36660067 33.51855298 -19.84685768 33.67520381 -21.3276062 33.82696533 C-25.19232303 34.22318595 -29.05286739 34.65697538 -32.9140625 35.0859375 C-33.67180466 35.16903168 -34.42954681 35.25212585 -35.21025085 35.33773804 C-40.99791882 35.97875931 -46.74864414 36.77615252 -52.5 37.6875 C-61.81496788 39.10080547 -71.19269316 40.07620454 -80.5625 41.0625 C-19.8425 41.0625 40.8775 41.0625 103.4375 41.0625 C91.8875 39.7425 80.3375 38.4225 68.4375 37.0625 C63.8175 36.4025 59.1975 35.7425 54.4375 35.0625 C49.17221542 34.42736314 43.90722683 33.79696512 38.63671875 33.20703125 C37.62996094 33.08714844 36.62320313 32.96726563 35.5859375 32.84375 C34.69052246 32.74126953 33.79510742 32.63878906 32.87255859 32.53320312 C30.35601376 32.0467485 28.59527547 31.44037784 26.4375 30.0625 C23.38532266 24.97553776 21.3341425 19.45473677 19.1875 13.9375 C18.91695801 13.25671387 18.64641602 12.57592773 18.36767578 11.87451172 C16.82394482 7.78804812 16.13851057 4.42502757 16.4375 0.0625 C33.20320897 -0.76054389 50.04132 2.04640823 66.578125 4.53515625 C70.96365446 5.13439358 75.35589707 5.627565 79.75488281 6.11669922 C97.85972043 8.13836316 97.85972043 8.13836316 106.6875 9.4375 C107.39487305 9.52700928 108.10224609 9.61651855 108.83105469 9.70874023 C113.96714941 10.51808328 116.87598017 12.31623275 120.4375 16.0625 C121.69830294 18.53927732 122.67025259 20.7202309 123.5625 23.3125 C124.02136126 24.56846882 124.48232815 25.8236702 124.9453125 27.078125 C125.27250149 28.00288179 125.27250149 28.00288179 125.60630035 28.94632053 C126.38750394 31.05750635 126.38750394 31.05750635 127.44002533 32.93062496 C131.07482517 39.83448151 131.00351579 46.31795394 130.95507812 53.99243164 C130.96050802 55.37978344 130.96763552 56.76712947 130.97631836 58.15446472 C130.99445028 61.89829685 130.98752708 65.6416848 130.97480202 69.38552403 C130.96462344 73.31622656 130.97408092 77.24689291 130.98034668 81.17759705 C130.98760817 87.77544941 130.97807403 94.37312221 130.95898438 100.97094727 C130.93720936 108.58452515 130.94427739 116.19767461 130.96629 123.81124216 C130.98447611 130.36524706 130.98698696 136.91912344 130.97653532 143.47314543 C130.97031913 147.38014362 130.96941296 151.2869408 130.98268127 155.19392586 C130.99428653 158.8672447 130.9861299 162.54001414 130.96310425 166.213274 C130.95534421 168.19404482 130.96713242 170.17486244 130.97961426 172.15560913 C130.90049754 180.52230774 129.95755225 186.09535704 124.25390625 192.5234375 C123.51011719 193.15507812 122.76632813 193.78671875 122 194.4375 C121.25878906 195.08460938 120.51757812 195.73171875 119.75390625 196.3984375 C114.7661098 199.98157627 110.22842399 200.35421576 104.22135925 200.32992554 C103.39785408 200.33445665 102.5743489 200.33898776 101.72588903 200.34365618 C98.968488 200.35630894 96.21128426 200.35467924 93.45385742 200.35302734 C91.475975 200.35901206 89.49809491 200.36581748 87.5202179 200.37338257 C82.14823484 200.39105594 76.77631549 200.39573853 71.40430617 200.39701414 C66.91878502 200.39891354 62.4332787 200.40627158 57.94776326 200.41335833 C47.36384951 200.42964512 36.77996977 200.43452703 26.19604492 200.43310547 C15.28118177 200.43190408 4.36651636 200.45300486 -6.54829675 200.4845928 C-15.92170288 200.51075235 -25.29504442 200.52147289 -34.66848677 200.52019465 C-40.26569836 200.51968491 -45.86273424 200.52537507 -51.45990944 200.54655075 C-56.725388 200.56592749 -61.99052314 200.5660613 -67.25601387 200.55151749 C-69.1861191 200.54942757 -71.11624579 200.55414114 -73.04631424 200.5662384 C-75.68641426 200.58171127 -78.32533312 200.57236959 -80.96540833 200.55697632 C-81.72466655 200.56726344 -82.48392478 200.57755057 -83.26619083 200.58814943 C-90.327556 200.49750269 -96.39704041 197.82485418 -101.375 192.75 C-102.18904297 191.95142578 -102.18904297 191.95142578 -103.01953125 191.13671875 C-108.29053612 184.05088689 -108.01804154 177.09915158 -108.0300293 168.55004883 C-108.04229625 167.18245883 -108.05575106 165.81487905 -108.07029724 164.4473114 C-108.10523797 160.74401042 -108.12059214 157.04088761 -108.13013434 153.33744264 C-108.13673436 151.01403475 -108.14708893 148.69067299 -108.15863991 146.36728477 C-108.19836069 138.23287671 -108.22038571 130.09860956 -108.22827148 121.96411133 C-108.23610728 114.43116961 -108.28516577 106.89925647 -108.35333699 99.36664182 C-108.41007964 92.86514961 -108.43519788 86.36399446 -108.43721896 79.86225718 C-108.43904166 75.9947118 -108.45309089 72.1282487 -108.50003624 68.26096535 C-108.72797687 48.29049317 -107.52961567 30.83210742 -95.5625 14.0625 C-92.23797604 10.732487 -88.44904231 10.20048941 -83.953125 9.5 C-83.20613342 9.37633057 -82.45914185 9.25266113 -81.68951416 9.12524414 C-74.04584045 7.901492 -66.3645662 7.06662299 -58.66394043 6.29776001 C-54.62860447 5.8940274 -50.59547976 5.46951727 -46.5625 5.04296875 C-45.77776306 4.96008102 -44.99302612 4.8771933 -44.18450928 4.79179382 C-36.33754684 3.9513441 -28.53467892 2.87051571 -20.734375 1.67578125 C-13.79617508 0.63078847 -7.03103815 -0.06826251 0 0 Z M-37.4375 87.4375 C-41.76814335 92.78711826 -40.78388874 98.21215336 -40.8125 104.875 C-40.833125 106.06416016 -40.85375 107.25332031 -40.875 108.47851562 C-40.88015625 109.62642578 -40.8853125 110.77433594 -40.890625 111.95703125 C-40.8999707 113.00737549 -40.90931641 114.05771973 -40.91894531 115.13989258 C-40.50704184 118.51721889 -39.58167158 120.34513508 -37.5625 123.0625 C-33.8251144 125.5540904 -31.98918417 125.52043285 -27.5625 125.0625 C-24.80920979 123.26687595 -23.03622539 122.00995078 -21.5625 119.0625 C-21.2630429 114.46407809 -21.28436362 109.85701583 -21.25 105.25 C-21.20649414 103.32317383 -21.20649414 103.32317383 -21.16210938 101.35742188 C-21.15373047 100.11927734 -21.14535156 98.88113281 -21.13671875 97.60546875 C-21.12213623 96.47133545 -21.10755371 95.33720215 -21.0925293 94.16870117 C-21.66318532 90.39703539 -22.92773916 88.76654018 -25.5625 86.0625 C-30.04892468 83.81928766 -33.65294159 84.31112566 -37.4375 87.4375 Z M45.4375 89.0625 C43.16309531 93.61130937 44.11732026 99.81887268 44.0625 104.8125 C44.02511719 106.08867188 43.98773438 107.36484375 43.94921875 108.6796875 C43.6563417 116.25277258 43.6563417 116.25277258 46.7109375 122.91015625 C50.0632924 125.55649945 51.41007501 125.90713502 55.50390625 125.58984375 C58.83921214 124.68021487 60.4149221 122.75927054 62.4375 120.0625 C64.03299443 115.26404894 63.62174204 110.1852134 63.625 105.1875 C63.64336914 103.71603516 63.64336914 103.71603516 63.66210938 102.21484375 C63.77173933 93.57358621 63.77173933 93.57358621 59.75 86.1875 C54.0132506 83.39664894 49.78182352 84.71817648 45.4375 89.0625 Z M-18.5625 155.0625 C-20.89546251 157.88967213 -20.89546251 157.88967213 -20.3125 161.125 C-19.8031756 164.161959 -19.8031756 164.161959 -17.5625 166.0625 C-15.5023267 166.81656896 -13.41368556 167.49416461 -11.3125 168.125 C-10.19359375 168.46660156 -9.0746875 168.80820313 -7.921875 169.16015625 C-1.62436639 170.85169635 4.26860909 171.24487637 10.75 171.25 C11.9555957 171.26836914 11.9555957 171.26836914 13.18554688 171.28710938 C21.14907742 171.30632948 28.31945463 169.57146397 35.875 167.125 C36.88433594 166.80660156 37.89367187 166.48820313 38.93359375 166.16015625 C41.73511224 165.200361 41.73511224 165.200361 43.4375 162.0625 C43.1133631 158.74009676 42.82973697 157.45473697 40.4375 155.0625 C35.63637087 154.61062902 31.50016124 155.74460874 26.9375 157.0625 C14.69655136 160.31686985 0.092469 160.8899845 -11.5625 155.0625 C-15.0625 154.72916667 -15.0625 154.72916667 -18.5625 155.0625 Z " fill="#FDFDFD" transform="translate(107.5625,-0.0625)"/></svg>`;
         const savedLeft = gmGet("pk_pos_left", null);
         const savedTop = gmGet("pk_pos_top", null);
@@ -4150,6 +4203,8 @@
             b.style.top = savedTop;
         }
         let isDragging = false, dragStartX, dragStartY;
+        b.onmouseenter = () => { b.style.opacity = "1"; };
+        b.onmouseleave = () => { b.style.opacity = "0.6"; };
         b.onmousedown = e => {
             isDragging = false;
             dragStartX = e.clientX;
