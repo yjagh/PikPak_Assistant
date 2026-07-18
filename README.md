@@ -1,4 +1,4 @@
-# PikPak File Manager (merged) / PikPak 文件管理器 整合版
+# PikPak Assistant / PikPak 助手
 
 基于 [poihoii/PikPak_FileManager](https://github.com/poihoii/PikPak_FileManager)（MIT License）官方 2.x 版本的个人整合修改版 Tampermonkey 脚本。
 
@@ -20,9 +20,9 @@ A personal merged fork of [poihoii/PikPak_FileManager](https://github.com/poihoi
 
 ## 安装 / Install
 
-安装 [Tampermonkey](https://www.tampermonkey.net/)，然后点击安装 [`PikPak_FileManager_merged.user.js`](PikPak_FileManager_merged.user.js)。
+安装 [Tampermonkey](https://www.tampermonkey.net/)，然后点击安装 [`PikPak_Assistant.user.js`](PikPak_Assistant.user.js)。
 
-Install [Tampermonkey](https://www.tampermonkey.net/), then install [`PikPak_FileManager_merged.user.js`](PikPak_FileManager_merged.user.js).
+Install [Tampermonkey](https://www.tampermonkey.net/), then install [`PikPak_Assistant.user.js`](PikPak_Assistant.user.js).
 
 ## 致谢 / Credits
 

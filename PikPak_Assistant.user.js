@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name           PikPak 파일 관리자 (merged)
-// @name:en        PikPak File Manager (merged)
-// @name:zh-CN     PikPak 文件管理器 整合版
-// @name:ja        PikPak ファイルマネージャー
+// @name           PikPak Assistant
+// @name:en        PikPak Assistant
+// @name:zh-CN     PikPak 助手
+// @name:ja        PikPak アシスタント
 // @namespace      https://github.com/yjagh/
 // @version        2.2.0
 // @description    PikPak 웹 드라이브를 확장해 빠른 탐색·중복 검사·파일명 일괄 변경·다운로드 기능을 제공하는 고급 파일 관리자.
@@ -14,7 +14,7 @@
 // @match          https://app.mypikpak.com/*
 // @match          https://drive.mypikpak.com/*
 // @icon           https://raw.githubusercontent.com/poihoii/PikPak_FileManager/refs/heads/main/img/logo%20(200).svg
-// @homepage       https://github.com/yjagh/PikPak_FileManager_merged
+// @homepage       https://github.com/yjagh/PikPak_Assistant
 // @grant          GM_setClipboard
 // @grant          GM_setValue
 // @grant          GM_getValue
