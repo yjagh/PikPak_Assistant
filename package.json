@@ -1,0 +1,13 @@
+{
+  "name": "pikpak-assistant",
+  "version": "2.4.3",
+  "description": "PikPak Assistant userscript — modularized source, bundled to a single .user.js",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2"
+  }
+}
