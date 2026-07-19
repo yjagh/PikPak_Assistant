@@ -4,7 +4,7 @@
 // @name:zh-CN     PikPak 助手
 // @name:ja        PikPak アシスタント
 // @namespace      https://github.com/yjagh/
-// @version        2.3.1
+// @version        2.3.2
 // @description    PikPak 웹 드라이브를 확장해 빠른 탐색·중복 검사·파일명 일괄 변경·다운로드 기능을 제공하는 고급 파일 관리자.
 // @description:en Enhances PikPak with fast navigation, duplicate scan, bulk rename, and advanced file-management tools.
 // @description:zh-CN 基于 PikPak 网页 API，提供快速浏览、重复文件扫描、批量重命名和高级下载功能的文件管理器。
@@ -2039,15 +2039,11 @@
             }
             try {
                 setLoad(true);
-                await fetch("https://api-drive.mypikpak.com/drive/v1/files:batchMove", {
-                    method: "POST",
-                    headers: getHeaders(),
-                    body: JSON.stringify({
-                        ids,
-                        to: {
-                            parent_id: targetFolderId
-                        }
-                    })
+                await apiAction(":batchMove", {
+                    ids,
+                    to: {
+                        parent_id: targetFolderId
+                    }
                 });
                 showToast(L.drag_move_done.replace("{n}", ids.length));
                 invalidateFolder(targetFolderId);
@@ -2212,15 +2208,11 @@
                 }
                 try {
                     setLoad(true);
-                    await fetch("https://api-drive.mypikpak.com/drive/v1/files:batchMove", {
-                        method: "POST",
-                        headers: getHeaders(),
-                        body: JSON.stringify({
-                            ids,
-                            to: {
-                                parent_id: targetFolderId
-                            }
-                        })
+                    await apiAction(":batchMove", {
+                        ids,
+                        to: {
+                            parent_id: targetFolderId
+                        }
                     });
                     showToast(L.drag_move_done.replace("{n}", ids.length));
                     invalidateFolder(targetFolderId);
@@ -3536,16 +3528,14 @@
             if (!name) return;
             const cur = S.path[S.path.length - 1];
             try {
-                const res = await fetch("https://api-drive.mypikpak.com/drive/v1/files", {
+                await pkFetch("https://api-drive.mypikpak.com/drive/v1/files", {
                     method: "POST",
-                    headers: getHeaders(),
                     body: JSON.stringify({
                         kind: "drive#folder",
                         parent_id: cur.id || "",
                         name
                     })
                 });
-                if (!res.ok) throw new Error("API Error " + res.status);
                 load();
             } catch (e) {
                 showAlert(L.err_generic + ": " + e.message);
@@ -3582,9 +3572,8 @@
             const ids = S.clipItems.slice();
             const endpoint = S.clipType === "move" ? "https://api-drive.mypikpak.com/drive/v1/files:batchMove" : "https://api-drive.mypikpak.com/drive/v1/files:batchCopy";
             try {
-                const res = await fetch(endpoint, {
+                await pkFetch(endpoint, {
                     method: "POST",
-                    headers: getHeaders(),
                     body: JSON.stringify({
                         ids,
                         to: {
@@ -3592,7 +3581,6 @@
                         }
                     })
                 });
-                if (!res.ok) throw new Error("API Error " + res.status);
                 S.clipItems = [];
                 S.clipType = "";
                 UI.btnPaste.disabled = true;
