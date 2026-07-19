@@ -4,7 +4,7 @@
 // @name:zh-CN     PikPak 助手
 // @name:ja        PikPak アシスタント
 // @namespace      https://github.com/yjagh/
-// @version        2.4.2
+// @version        2.4.3
 // @description    PikPak 웹 드라이브를 확장해 빠른 탐색·중복 검사·파일명 일괄 변경·다운로드 기능을 제공하는 고급 파일 관리자.
 // @description:en Enhances PikPak with fast navigation, duplicate scan, bulk rename, and advanced file-management tools.
 // @description:zh-CN 基于 PikPak 网页 API，提供快速浏览、重复文件扫描、批量重命名和高级下载功能的文件管理器。
@@ -2329,6 +2329,16 @@
                 const videos = S.display.filter(i => i.mime_type && (i.mime_type.startsWith("video") || i.mime_type.startsWith("image")));
                 videos.sort((a, b) => a.name.length - b.name.length);
                 const clean = name => name.replace(/\.[^/.]+$/, "").toLowerCase().trim();
+                const VIDEO_EXT = new Set(["mp4", "mov", "mkv", "avi", "wmv", "flv", "webm", "ts", "m4v", "3gp", "mpg", "mpeg", "rmvb", "rm", "vob", "m2ts", "f4v"]);
+                const IMAGE_EXT = new Set(["jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "tif", "ico", "heic", "heif", "avif"]);
+                // 文件名一致时的同类判定：视频类与图片类互不算重复；未知扩展名仅与完全相同扩展名同类
+                const nameKind = name => {
+                    const dot = name.lastIndexOf(".");
+                    const ext = dot >= 0 ? name.slice(dot + 1).toLowerCase() : "";
+                    if (VIDEO_EXT.has(ext)) return "video";
+                    if (IMAGE_EXT.has(ext)) return "image";
+                    return "ext:" + ext;
+                };
                 const assigned = new Set;
                 const groups = [];
                 const chunkSize = 50;
@@ -2360,7 +2370,7 @@
                         }
                         if (!isDup) {
                             const targetName = clean(target.name);
-                            if (rootName === targetName) {
+                            if (rootName === targetName && nameKind(root.name) === nameKind(target.name)) {
                                 isDup = true;
                                 type = "name";
                             } else if (rootDur > 0) {
