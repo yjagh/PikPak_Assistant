@@ -1,3 +1,4 @@
+import { sleep, esc, fmtSize, fmtDate, fmtDur, gmGet, gmSet } from "./utils.js";
 import { T } from "./i18n.js";
 import CSS from "./styles.css";
 
@@ -46,39 +47,6 @@ import CSS from "./styles.css";
             file: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>`
         }
     };
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-    const esc = s => (s || "").replace(/[&<>"']/g, m => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    }[m]));
-    const fmtSize = n => {
-        n = parseInt(n || 0, 10);
-        if (!n) return "";
-        const u = ["B", "KB", "MB", "GB", "TB"];
-        let i = 0;
-        while (n >= 1024 && i < u.length - 1) {
-            n /= 1024;
-            i++;
-        }
-        return (n < 10 ? n.toFixed(2) : n.toFixed(1)) + " " + u[i];
-    };
-    const fmtDate = t => t ? new Date(t).toLocaleDateString() : "-";
-    const fmtDur = s => {
-        if (!s) return "";
-        s = parseInt(s, 10);
-        const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sc = s % 60;
-        return (h > 0 ? h + ":" : "") + String(m).padStart(2, "0") + ":" + String(sc).padStart(2, "0");
-    };
-    function gmGet(key, def) {
-        if (typeof GM_getValue !== "undefined") return GM_getValue(key, def);
-        return def;
-    }
-    function gmSet(key, val) {
-        if (typeof GM_setValue !== "undefined") GM_setValue(key, val);
-    }
     function getLang() {
         const userLang = gmGet("pk_lang", "");
         if (userLang) return userLang;
