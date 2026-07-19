@@ -4,7 +4,7 @@
 // @name:zh-CN     PikPak 助手
 // @name:ja        PikPak アシスタント
 // @namespace      https://github.com/yjagh/
-// @version        2.3.0
+// @version        2.3.1
 // @description    PikPak 웹 드라이브를 확장해 빠른 탐색·중복 검사·파일명 일괄 변경·다운로드 기능을 제공하는 고급 파일 관리자.
 // @description:en Enhances PikPak with fast navigation, duplicate scan, bulk rename, and advanced file-management tools.
 // @description:zh-CN 基于 PikPak 网页 API，提供快速浏览、重复文件扫描、批量重命名和高级下载功能的文件管理器。
@@ -955,42 +955,51 @@
             "x-captcha-token": captcha
         };
     }
-    async function apiList(parentId, limit = 1e3, onProgress, checkActive, filters = null) {
-        let all = [], next = null, safe = 5e3, retry = 0;
-        // while 循环（非 do...while）：429 时 continue 回到循环顶部重试当前页，
-        // 而不是像 do...while 那样跳到条件判断——首页 next 仍为 null 会直接退出，
-        // 把"被限流"误当成"空文件夹"返回
-        while (safe-- > 0) {
+    // 统一的底层请求封装：超时(15s) + 429 退避重试(优先 Retry-After) + 错误体解析。
+    // apiList/apiGet/apiBatchTrash/apiAction 都基于它，消除三处不一致的 429 实现。
+    async function pkFetch(url, opts = {}) {
+        const { method = "GET", body = null, retries = 3, timeout = 15e3, checkActive = null } = opts;
+        for (let attempt = 0; attempt < retries; attempt++) {
             if (checkActive && !checkActive()) throw new Error("AbortError");
-            let filterStr = filters ? `&filters=${encodeURIComponent(JSON.stringify(filters))}` : "";
-            const url = `https://api-drive.mypikpak.com/drive/v1/files?thumbnail_size=SIZE_MEDIUM&limit=${limit}&parent_id=${parentId || ""}&with_audit=true${next ? `&page_token=${next}` : ""}${filterStr}`;
             let res;
+            const controller = new AbortController;
+            const timer = timeout ? setTimeout(() => controller.abort(), timeout) : null;
             try {
-                const controller = new AbortController;
-                const id = setTimeout(() => controller.abort(), 15e3);
                 res = await fetch(url, {
+                    method,
                     headers: getHeaders(),
+                    ...body != null ? { body } : {},
                     signal: controller.signal
                 });
-                clearTimeout(id);
             } catch (e) {
+                if (timer) clearTimeout(timer);
                 if (e.name === "AbortError") {
-                    if (checkActive && !checkActive()) throw new Error("AbortError"); else throw new Error("API Request Timed Out");
+                    if (checkActive && !checkActive()) throw new Error("AbortError");
+                    throw new Error("API Request Timed Out");
                 }
                 throw e;
             }
-            if (!res.ok) {
-                // 429 限流：有上限地重试当前页（含首页）
-                if (res.status === 429 && retry < 5) {
-                    retry++;
-                    await sleep(2e3 * retry);
-                    continue;
-                }
-                throw new Error("API Error " + res.status);
+            if (timer) clearTimeout(timer);
+            const data = await res.json().catch(() => null);
+            if (res.ok && !(data && data.error)) return data;
+            if (res.status === 429 && attempt < retries - 1) {
+                const retryAfter = Number(res.headers.get("Retry-After")) || 2 * (attempt + 1);
+                await sleep(retryAfter * 1e3);
+                continue;
             }
-            retry = 0;
-            const data = await res.json();
-            if (data.files) {
+            const message = data && (data.error_description || data.error && data.error.message || data.message) || `API Error ${res.status}`;
+            throw new Error(message);
+        }
+        throw new Error("API Error 429");
+    }
+    async function apiList(parentId, limit = 1e3, onProgress, checkActive, filters = null) {
+        let all = [], next = null, safe = 5e3;
+        while (safe-- > 0) {
+            if (checkActive && !checkActive()) throw new Error("AbortError");
+            const filterStr = filters ? `&filters=${encodeURIComponent(JSON.stringify(filters))}` : "";
+            const url = `https://api-drive.mypikpak.com/drive/v1/files?thumbnail_size=SIZE_MEDIUM&limit=${limit}&parent_id=${parentId || ""}&with_audit=true${next ? `&page_token=${next}` : ""}${filterStr}`;
+            const data = await pkFetch(url, { retries: 6, checkActive });
+            if (data && data.files) {
                 const validFiles = data.files.filter(f => !f.trashed && f.phase === "PHASE_TYPE_COMPLETE");
                 for (const f of validFiles) all.push(f);
                 if (onProgress) {
@@ -998,57 +1007,29 @@
                     await sleep(0);
                 }
             }
-            next = data.next_page_token;
+            next = data && data.next_page_token;
             if (!next) break;
             if (checkActive && !checkActive()) break;
         }
         return all;
     }
     async function apiGet(id) {
-        for (let attempt = 0; attempt < 3; attempt++) {
-            const res = await fetch(`https://api-drive.mypikpak.com/drive/v1/files/${id}`, {
-                headers: getHeaders()
-            });
-            if (res.ok) return res.json();
-            if (res.status === 429 && attempt < 2) {
-                await sleep(2e3 * (attempt + 1));
-                continue;
-            }
-            throw new Error(`API Error ${res.status}`);
-        }
-        throw new Error("API Error 429");
+        return pkFetch(`https://api-drive.mypikpak.com/drive/v1/files/${id}`, { retries: 3 });
     }
     async function apiBatchTrash(ids) {
-        for (let attempt = 0; attempt < 3; attempt++) {
-            const res = await fetch("https://api-drive.mypikpak.com/drive/v1/files:batchTrash", {
-                method: "POST",
-                headers: getHeaders(),
-                body: JSON.stringify({ ids })
-            });
-            const data = await res.json().catch(() => ({}));
-            if (res.ok && !data?.error) return data;
-            if (res.status === 429 && attempt < 2) {
-                const retryAfter = Number(res.headers.get("Retry-After")) || 2 * (attempt + 1);
-                await sleep(retryAfter * 1e3);
-                continue;
-            }
-            const message = data?.error_description || data?.error?.message || data?.message || `API Error ${res.status}`;
-            throw new Error(message);
-        }
-        throw new Error("API Error 429");
+        return pkFetch("https://api-drive.mypikpak.com/drive/v1/files:batchTrash", {
+            method: "POST",
+            body: JSON.stringify({ ids }),
+            retries: 3
+        });
     }
     async function apiAction(action, data) {
         const method = action.includes("batch") ? "POST" : "PATCH";
-        const res = await fetch(`https://api-drive.mypikpak.com/drive/v1/files${action}`, {
+        return pkFetch(`https://api-drive.mypikpak.com/drive/v1/files${action}`, {
             method,
-            headers: getHeaders(),
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            retries: 3
         });
-        if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.error_description || `API Error ${res.status}`);
-        }
-        return res.json();
     }
     const _state = {
         path: [{
