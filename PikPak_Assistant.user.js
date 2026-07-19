@@ -4,7 +4,7 @@
 // @name:zh-CN     PikPak 助手
 // @name:ja        PikPak アシスタント
 // @namespace      https://github.com/yjagh/
-// @version        2.3.2
+// @version        2.4.0
 // @description    PikPak 웹 드라이브를 확장해 빠른 탐색·중복 검사·파일명 일괄 변경·다운로드 기능을 제공하는 고급 파일 관리자.
 // @description:en Enhances PikPak with fast navigation, duplicate scan, bulk rename, and advanced file-management tools.
 // @description:zh-CN 基于 PikPak 网页 API，提供快速浏览、重复文件扫描、批量重命名和高级下载功能的文件管理器。
@@ -1031,7 +1031,10 @@
             retries: 3
         });
     }
-    const _state = {
+    // 单一状态源：模块级渲染函数与 openManager 业务逻辑共享同一个模块级 S，
+    // 取代原先 subscribe=0 的死 store(AppState)+手动 syncState 双轨制。
+    // 初始为默认值，openManager 打开时整体重置。
+    let S = {
         path: [{
             id: "",
             name: "🏠 Home"
@@ -1058,31 +1061,6 @@
         search: "",
         view: "list",
         gridZoom: 140
-    };
-    const _listeners = new Map;
-    const AppState = {
-        get(key) {
-            return _state[key];
-        },
-        getAll() {
-            return {
-                ..._state
-            };
-        },
-        getRef() {
-            return _state;
-        },
-        setState(patch) {
-            Object.assign(_state, patch);
-            Object.keys(patch).forEach(key => {
-                _listeners.get(key)?.forEach(fn => fn(_state[key], _state));
-            });
-        },
-        subscribe(key, fn) {
-            if (!_listeners.has(key)) _listeners.set(key, new Set);
-            _listeners.get(key).add(fn);
-            return () => _listeners.get(key).delete(fn);
-        }
     };
     let _parentEl = null;
     let _L = null;
@@ -1206,13 +1184,13 @@
         return _overlayEl;
     }
     function createLayout(L, lang, version) {
-        const view = AppState.get("view") || "list";
+        const view = S.view || "list";
         const el = document.createElement("div");
         el.className = "pk-ov";
         let siteFont = window.getComputedStyle(document.body).fontFamily || "";
         siteFont = siteFont.replace(/,?\s*sans-serif\s*$/i, "");
         el.style.fontFamily = siteFont ? `${siteFont}, "Noto Sans", sans-serif` : '"Noto Sans", sans-serif';
-        el.innerHTML = `\n        <style>${CSS}</style>\n        <div class="pk-win pk-lang-${lang}">\n            <div class="pk-loading-ov" id="pk-loader"><div class="pk-spin-lg"></div><div class="pk-loading-txt" id="pk-load-txt">${L.loading_detail}</div><button class="pk-stop-btn" id="pk-stop-load" title="${L.tip_stop}">${CONF.icons.stop} <span>${L.btn_stop}</span></button></div>\n            <div class="pk-hd"><div class="pk-tt"><img src="${CONF.logoUrl}" style="width:24px;height:24px;border-radius:4px;object-fit:contain;">${L.title}</div><div style="display:flex;gap:4px;"><div class="pk-btn" id="pk-help" style="width:32px;padding:0;justify-content:center;" title="${L.tip_help}">${CONF.icons.help}</div><div class="pk-btn" id="pk-settings" style="width:32px;padding:0;justify-content:center;" title="${L.tip_settings}">${CONF.icons.settings}</div><div class="pk-btn" id="pk-close" style="width:32px;padding:0;justify-content:center;">${CONF.icons.close}</div></div></div>\n            <div class="pk-tb"><button class="pk-btn" id="pk-nav-back" title="${L.tip_back}">${CONF.icons.back}<span>${L.btn_back}</span></button><button class="pk-btn" id="pk-refresh" title="${L.tip_refresh}">${CONF.icons.refresh}</button><button class="pk-btn" id="pk-nav-fwd" title="${L.tip_fwd}">${CONF.icons.fwd}<span>${L.btn_fwd}</span></button><div class="pk-sep"></div><div class="pk-nav" id="pk-crumb"></div><div style="flex:1"></div><div class="pk-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="pk-search-input" placeholder="${L.placeholder_search}" title="${L.tip_search_global || L.tip_search}" autocomplete="off"><div class="pk-sep" style="height:16px;"></div><div id="pk-filter-toggle" class="pk-filter-icon" title="${L.tip_filter}">${CONF.icons.filter}</div></div><div class="pk-dup-toolbar" id="pk-dup-tools"><span class="pk-dup-lbl">${L.lbl_dup_tool}</span><select id="pk-dup-filter" class="pk-dup-filter" title="${L.tip_dup_filter || ""}"><option value="all">${L.opt_all || "All"}</option><option value="hash">${L.opt_hash || L.tag_hash}</option><option value="name">${L.opt_name || L.tag_name}</option><option value="sim">${L.opt_sim || L.tag_sim}</option></select><button class="pk-btn-toggle" id="pk-dup-size" title="${L.tip_toggle_size}">${L.btn_toggle_size} <span id="pk-cond-size">(${L.cond_small})</span></button><button class="pk-btn-toggle" id="pk-dup-date" title="${L.tip_toggle_date}">${L.btn_toggle_date} <span id="pk-cond-date">(${L.cond_old})</span></button></div><button class="pk-btn" id="pk-dup" style="display:none" title="${L.tip_dup}">${CONF.icons.dup} <span>${L.btn_dup}</span></button><button class="pk-btn" id="pk-scan" title="${L.tip_scan}">${CONF.icons.scan} <span>${L.btn_scan}</span></button></div>\n            <div class="pk-tb" id="pk-actionbar"><div class="pk-btn" id="pk-sidebar-toggle" title="${L.tip_sidebar}">${CONF.icons.sidebar}</div><button class="pk-btn" id="pk-view-toggle" title="${view === "list" ? L.btn_view_grid : L.btn_view_list}">${view === "list" ? CONF.icons.grid_view : CONF.icons.list_view}</button><input type="range" id="pk-grid-zoom" class="pk-zoom-slider" min="80" max="320" value="${AppState.get("gridZoom") || 140}" style="display:${view === "grid" ? "inline-block" : "none"}; width:70px; margin-left:8px; cursor:pointer;" title="${L.tip_zoom}"><div class="pk-sep"></div><div class="pk-sort-dropdown" id="pk-sort-dd"><button class="pk-sort-btn" id="pk-sort-b" title="${L.tip_sort}" style="min-width:80px;padding:4px 8px;border-radius:4px;border:1px solid var(--pk-bd);background:transparent;color:var(--pk-fg);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:2px;"><span class="pk-sort-label">${L.sort_name || "Sort"}</span><span class="pk-sort-dir-icon" style="font-size:10px;font-weight:bold;margin-left:2px;"></span><span style="margin-left:4px;opacity:0.4;display:flex;">${CONF.icons.chevron_down}</span></button><div class="pk-sort-menu" id="pk-sort-m"><div class="pk-sort-opt" data-k="name">${L.sort_name || "Name"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="size">${L.sort_size || "Size"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="duration">${L.sort_duration || "Duration"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="modified_time">${L.sort_modified || "Modified"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="created_time">${L.sort_created || "Created"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="ext">${L.sort_ext || "Extension"}<span class="pk-sort-dir"></span></div></div></div><div class="pk-sep"></div><button class="pk-btn" id="pk-newfolder" title="${L.tip_newfolder}">${CONF.icons.newfolder} <span>${L.btn_newfolder}</span></button><button class="pk-btn" id="pk-del" title="${L.tip_del}">${CONF.icons.del} <span>${L.btn_del}</span></button><button class="pk-btn" id="pk-deselect" title="${L.tip_deselect}" style="display:none">${CONF.icons.deselect} <span>${L.btn_deselect}</span></button><div class="pk-sep"></div><button class="pk-btn" id="pk-copy" title="${L.tip_copy}">${CONF.icons.copy} <span>${L.btn_copy}</span></button><button class="pk-btn" id="pk-cut" title="${L.tip_cut}">${CONF.icons.cut} <span>${L.btn_cut}</span></button><button class="pk-btn" id="pk-paste" title="${L.tip_paste}" disabled>${CONF.icons.paste} <span>${L.btn_paste}</span></button><div class="pk-sep"></div><button class="pk-btn" id="pk-rename" title="${L.tip_rename}">${CONF.icons.rename} <span>${L.btn_rename}</span></button><button class="pk-btn" id="pk-bulkrename" title="${L.tip_bulkrename}">${CONF.icons.bulkrename} <span>${L.btn_bulkrename}</span></button><div class="pk-sep"></div><button class="pk-btn" id="pk-link-copy" title="${L.tip_link_copy}">${CONF.icons.link_copy || "🔗"} <span>${L.btn_link_copy}</span></button><button class="pk-btn" id="pk-resource-copy" title="${L.tip_resource_copy}">${CONF.icons.link_copy || "🧲"} <span>${L.btn_resource_copy}</span></button><button class="pk-btn" id="pk-tree-select" title="${L.tip_tree_select}">📄 <span>${L.btn_tree_select}</span></button></div>\n            <div id="pk-filter-area"></div>\n            <div class="pk-body">\n                <div class="pk-sidebar" id="pk-sidebar"></div>\n                <div class="pk-main">\n                    <div class="pk-grid-hd"><div><input type="checkbox" id="pk-all"></div><div class="pk-col" data-k="name">${L.col_name} <span></span></div><div class="pk-col" data-k="size">${L.col_size} <span></span></div><div class="pk-col" data-k="duration">${L.col_dur} <span></span></div><div class="pk-col" data-k="modified_time">${L.col_date} <span></span></div></div>\n                    <div class="pk-vp" id="pk-vp"><div class="pk-in" id="pk-in"></div></div>\n                </div>\n            </div>\n            <div class="pk-ft"><div class="pk-stat" id="pk-stat">${L.status_ready.replace("{n}", 0)}</div><div class="pk-grp"><button class="pk-btn" id="pk-ext" title="${L.tip_ext}">${CONF.icons.play} <span>${L.btn_ext}</span></button><div class="pk-sep"></div><button class="pk-btn" id="pk-idm" title="${L.tip_idm}">${CONF.icons.link} <span>${L.btn_idm}</span></button><button class="pk-btn" id="pk-aria2" title="${L.tip_aria2}">${CONF.icons.send} <span>${L.btn_aria2}</span></button><button class="pk-btn" id="pk-down" title="${L.tip_down}">${CONF.icons.download} <span>${L.btn_down}</span></button></div></div>\n        </div>\n        <div class="pk-pop" id="pk-pop"></div>\n        <div class="pk-ctx" id="pk-ctx"><div class="pk-ctx-item" id="ctx-open">📂 ${L.ctx_open}</div><div class="pk-ctx-sep"></div><div class="pk-ctx-item" id="ctx-ext-play">🖥️ ${L.ctx_ext_play}</div><div class="pk-ctx-item" id="ctx-down">💾 ${L.ctx_down}</div><div class="pk-ctx-item" id="ctx-copy">📄 ${L.ctx_copy}</div><div class="pk-ctx-item" id="ctx-cut">✂️ ${L.ctx_cut}</div><div class="pk-ctx-sep"></div><div class="pk-ctx-item" id="ctx-rename">✏️ ${L.ctx_rename}</div><div class="pk-ctx-item" id="ctx-del" style="color:#d93025">🗑️ ${L.ctx_del}</div></div>\n        <div class="pk-toast-box" id="pk-toast-box"></div>\n    `;
+        el.innerHTML = `\n        <style>${CSS}</style>\n        <div class="pk-win pk-lang-${lang}">\n            <div class="pk-loading-ov" id="pk-loader"><div class="pk-spin-lg"></div><div class="pk-loading-txt" id="pk-load-txt">${L.loading_detail}</div><button class="pk-stop-btn" id="pk-stop-load" title="${L.tip_stop}">${CONF.icons.stop} <span>${L.btn_stop}</span></button></div>\n            <div class="pk-hd"><div class="pk-tt"><img src="${CONF.logoUrl}" style="width:24px;height:24px;border-radius:4px;object-fit:contain;">${L.title}</div><div style="display:flex;gap:4px;"><div class="pk-btn" id="pk-help" style="width:32px;padding:0;justify-content:center;" title="${L.tip_help}">${CONF.icons.help}</div><div class="pk-btn" id="pk-settings" style="width:32px;padding:0;justify-content:center;" title="${L.tip_settings}">${CONF.icons.settings}</div><div class="pk-btn" id="pk-close" style="width:32px;padding:0;justify-content:center;">${CONF.icons.close}</div></div></div>\n            <div class="pk-tb"><button class="pk-btn" id="pk-nav-back" title="${L.tip_back}">${CONF.icons.back}<span>${L.btn_back}</span></button><button class="pk-btn" id="pk-refresh" title="${L.tip_refresh}">${CONF.icons.refresh}</button><button class="pk-btn" id="pk-nav-fwd" title="${L.tip_fwd}">${CONF.icons.fwd}<span>${L.btn_fwd}</span></button><div class="pk-sep"></div><div class="pk-nav" id="pk-crumb"></div><div style="flex:1"></div><div class="pk-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="pk-search-input" placeholder="${L.placeholder_search}" title="${L.tip_search_global || L.tip_search}" autocomplete="off"><div class="pk-sep" style="height:16px;"></div><div id="pk-filter-toggle" class="pk-filter-icon" title="${L.tip_filter}">${CONF.icons.filter}</div></div><div class="pk-dup-toolbar" id="pk-dup-tools"><span class="pk-dup-lbl">${L.lbl_dup_tool}</span><select id="pk-dup-filter" class="pk-dup-filter" title="${L.tip_dup_filter || ""}"><option value="all">${L.opt_all || "All"}</option><option value="hash">${L.opt_hash || L.tag_hash}</option><option value="name">${L.opt_name || L.tag_name}</option><option value="sim">${L.opt_sim || L.tag_sim}</option></select><button class="pk-btn-toggle" id="pk-dup-size" title="${L.tip_toggle_size}">${L.btn_toggle_size} <span id="pk-cond-size">(${L.cond_small})</span></button><button class="pk-btn-toggle" id="pk-dup-date" title="${L.tip_toggle_date}">${L.btn_toggle_date} <span id="pk-cond-date">(${L.cond_old})</span></button></div><button class="pk-btn" id="pk-dup" style="display:none" title="${L.tip_dup}">${CONF.icons.dup} <span>${L.btn_dup}</span></button><button class="pk-btn" id="pk-scan" title="${L.tip_scan}">${CONF.icons.scan} <span>${L.btn_scan}</span></button></div>\n            <div class="pk-tb" id="pk-actionbar"><div class="pk-btn" id="pk-sidebar-toggle" title="${L.tip_sidebar}">${CONF.icons.sidebar}</div><button class="pk-btn" id="pk-view-toggle" title="${view === "list" ? L.btn_view_grid : L.btn_view_list}">${view === "list" ? CONF.icons.grid_view : CONF.icons.list_view}</button><input type="range" id="pk-grid-zoom" class="pk-zoom-slider" min="80" max="320" value="${S.gridZoom || 140}" style="display:${view === "grid" ? "inline-block" : "none"}; width:70px; margin-left:8px; cursor:pointer;" title="${L.tip_zoom}"><div class="pk-sep"></div><div class="pk-sort-dropdown" id="pk-sort-dd"><button class="pk-sort-btn" id="pk-sort-b" title="${L.tip_sort}" style="min-width:80px;padding:4px 8px;border-radius:4px;border:1px solid var(--pk-bd);background:transparent;color:var(--pk-fg);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:2px;"><span class="pk-sort-label">${L.sort_name || "Sort"}</span><span class="pk-sort-dir-icon" style="font-size:10px;font-weight:bold;margin-left:2px;"></span><span style="margin-left:4px;opacity:0.4;display:flex;">${CONF.icons.chevron_down}</span></button><div class="pk-sort-menu" id="pk-sort-m"><div class="pk-sort-opt" data-k="name">${L.sort_name || "Name"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="size">${L.sort_size || "Size"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="duration">${L.sort_duration || "Duration"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="modified_time">${L.sort_modified || "Modified"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="created_time">${L.sort_created || "Created"}<span class="pk-sort-dir"></span></div><div class="pk-sort-opt" data-k="ext">${L.sort_ext || "Extension"}<span class="pk-sort-dir"></span></div></div></div><div class="pk-sep"></div><button class="pk-btn" id="pk-newfolder" title="${L.tip_newfolder}">${CONF.icons.newfolder} <span>${L.btn_newfolder}</span></button><button class="pk-btn" id="pk-del" title="${L.tip_del}">${CONF.icons.del} <span>${L.btn_del}</span></button><button class="pk-btn" id="pk-deselect" title="${L.tip_deselect}" style="display:none">${CONF.icons.deselect} <span>${L.btn_deselect}</span></button><div class="pk-sep"></div><button class="pk-btn" id="pk-copy" title="${L.tip_copy}">${CONF.icons.copy} <span>${L.btn_copy}</span></button><button class="pk-btn" id="pk-cut" title="${L.tip_cut}">${CONF.icons.cut} <span>${L.btn_cut}</span></button><button class="pk-btn" id="pk-paste" title="${L.tip_paste}" disabled>${CONF.icons.paste} <span>${L.btn_paste}</span></button><div class="pk-sep"></div><button class="pk-btn" id="pk-rename" title="${L.tip_rename}">${CONF.icons.rename} <span>${L.btn_rename}</span></button><button class="pk-btn" id="pk-bulkrename" title="${L.tip_bulkrename}">${CONF.icons.bulkrename} <span>${L.btn_bulkrename}</span></button><div class="pk-sep"></div><button class="pk-btn" id="pk-link-copy" title="${L.tip_link_copy}">${CONF.icons.link_copy || "🔗"} <span>${L.btn_link_copy}</span></button><button class="pk-btn" id="pk-resource-copy" title="${L.tip_resource_copy}">${CONF.icons.link_copy || "🧲"} <span>${L.btn_resource_copy}</span></button><button class="pk-btn" id="pk-tree-select" title="${L.tip_tree_select}">📄 <span>${L.btn_tree_select}</span></button></div>\n            <div id="pk-filter-area"></div>\n            <div class="pk-body">\n                <div class="pk-sidebar" id="pk-sidebar"></div>\n                <div class="pk-main">\n                    <div class="pk-grid-hd"><div><input type="checkbox" id="pk-all"></div><div class="pk-col" data-k="name">${L.col_name} <span></span></div><div class="pk-col" data-k="size">${L.col_size} <span></span></div><div class="pk-col" data-k="duration">${L.col_dur} <span></span></div><div class="pk-col" data-k="modified_time">${L.col_date} <span></span></div></div>\n                    <div class="pk-vp" id="pk-vp"><div class="pk-in" id="pk-in"></div></div>\n                </div>\n            </div>\n            <div class="pk-ft"><div class="pk-stat" id="pk-stat">${L.status_ready.replace("{n}", 0)}</div><div class="pk-grp"><button class="pk-btn" id="pk-ext" title="${L.tip_ext}">${CONF.icons.play} <span>${L.btn_ext}</span></button><div class="pk-sep"></div><button class="pk-btn" id="pk-idm" title="${L.tip_idm}">${CONF.icons.link} <span>${L.btn_idm}</span></button><button class="pk-btn" id="pk-aria2" title="${L.tip_aria2}">${CONF.icons.send} <span>${L.btn_aria2}</span></button><button class="pk-btn" id="pk-down" title="${L.tip_down}">${CONF.icons.download} <span>${L.btn_down}</span></button></div></div>\n        </div>\n        <div class="pk-pop" id="pk-pop"></div>\n        <div class="pk-ctx" id="pk-ctx"><div class="pk-ctx-item" id="ctx-open">📂 ${L.ctx_open}</div><div class="pk-ctx-sep"></div><div class="pk-ctx-item" id="ctx-ext-play">🖥️ ${L.ctx_ext_play}</div><div class="pk-ctx-item" id="ctx-down">💾 ${L.ctx_down}</div><div class="pk-ctx-item" id="ctx-copy">📄 ${L.ctx_copy}</div><div class="pk-ctx-item" id="ctx-cut">✂️ ${L.ctx_cut}</div><div class="pk-ctx-sep"></div><div class="pk-ctx-item" id="ctx-rename">✏️ ${L.ctx_rename}</div><div class="pk-ctx-item" id="ctx-del" style="color:#d93025">🗑️ ${L.ctx_del}</div></div>\n        <div class="pk-toast-box" id="pk-toast-box"></div>\n    `;
         document.body.appendChild(el);
         _overlayEl = el;
         UI.el = el;
@@ -1364,9 +1342,7 @@
         return el;
     }
     function setLoading(b, L) {
-        AppState.setState({
-            loading: b
-        });
+        S.loading = b;
         UI.loader.style.display = b ? "flex" : "none";
         if (b && L) UI.loadTxt.textContent = L.loading_detail;
     }
@@ -1374,7 +1350,7 @@
         if (UI.loadTxt) UI.loadTxt.innerText = txt;
     }
     function updateStat(L) {
-        const n = AppState.get("sel").size, display = AppState.get("display");
+        const n = S.sel.size, display = S.display;
         UI.stat.textContent = n > 0 ? L.sel_count.replace("{n}", n) : L.status_ready.replace("{n}", display.length);
         const hasSel = n > 0;
         UI.btnCopy.disabled = !hasSel;
@@ -1388,7 +1364,7 @@
         if (UI.btnResourceCopy) UI.btnResourceCopy.disabled = !hasSel;
     }
     function updateNavState() {
-        const path = AppState.get("path"), history = AppState.get("history"), forward = AppState.get("forward");
+        const path = S.path, history = S.history, forward = S.forward;
         UI.btnBack.disabled = history.length === 0 && path.length <= 1;
         UI.btnFwd.disabled = forward.length === 0;
     }
@@ -1422,7 +1398,7 @@
         return CONF.typeIcons.file;
     }
     function render() {
-        const view = AppState.get("view");
+        const view = S.view;
         if (view === "list") {
             const hd = UI.win.querySelector(".pk-grid-hd");
             if (hd) hd.classList.remove("hidden");
@@ -1436,9 +1412,9 @@
         }
     }
     function renderList() {
-        const display = AppState.get("display");
-        const sort = AppState.get("sort");
-        const dir = AppState.get("dir");
+        const display = S.display;
+        const sort = S.sort;
+        const dir = S.dir;
         UI.in.style.height = `${display.length * CONF.rowHeight}px`;
         UI.cols.forEach(c => {
             c.querySelector("span").textContent = c.dataset.k === sort ? dir === 1 ? " ▲" : " ▼" : "";
@@ -1447,9 +1423,9 @@
         requestAnimationFrame(renderVisibleList);
     }
     function renderVisibleList() {
-        if (AppState.get("view") !== "list") return;
-        const display = AppState.get("display");
-        const sel = AppState.get("sel");
+        if (S.view !== "list") return;
+        const display = S.display;
+        const sel = S.sel;
         const top = UI.vp.scrollTop, h = UI.vp.clientHeight;
         const start = Math.max(0, Math.floor(top / CONF.rowHeight) - CONF.buffer);
         const end = Math.min(display.length, Math.ceil((top + h) / CONF.rowHeight) + CONF.buffer);
@@ -1487,9 +1463,9 @@
         }
     }
     function renderGrid() {
-        if (AppState.get("view") !== "grid") return;
-        const display = AppState.get("display");
-        const zoom = AppState.get("gridZoom") || 140;
+        if (S.view !== "grid") return;
+        const display = S.display;
+        const zoom = S.gridZoom || 140;
         const gap = 10, padding = 10, containerW = UI.vp.clientWidth - padding * 2;
         const cols = Math.floor((containerW + gap) / (zoom + gap)) || 1;
         const cardW = (containerW - (cols - 1) * gap) / cols;
@@ -1509,9 +1485,9 @@
         requestAnimationFrame(renderVisibleGrid);
     }
     function renderVisibleGrid() {
-        if (AppState.get("view") !== "grid") return;
+        if (S.view !== "grid") return;
         const { items, cols, cardW, cardH, gap } = _gridCache;
-        const sel = AppState.get("sel");
+        const sel = S.sel;
         const top = UI.vp.scrollTop, h = UI.vp.clientHeight;
         const startRow = Math.max(0, Math.floor(top / (cardH + gap)) - 2);
         const endRow = Math.min(Math.ceil(items.length / cols), Math.ceil((top + h) / (cardH + gap)) + 2);
@@ -1546,8 +1522,8 @@
             _scrollPending = true;
             requestAnimationFrame(() => {
                 _scrollPending = false;
-                if (AppState.get("view") === "list") {
-                    const display = AppState.get("display");
+                if (S.view === "list") {
+                    const display = S.display;
                     const top = UI.vp.scrollTop, h = UI.vp.clientHeight;
                     const start = Math.max(0, Math.floor(top / CONF.rowHeight) - CONF.buffer);
                     const end = Math.min(display.length, Math.ceil((top + h) / CONF.rowHeight) + CONF.buffer);
@@ -1560,17 +1536,13 @@
     function applyDragDrop(el, d) {
         el.setAttribute("draggable", "true");
         el.ondragstart = e => {
-            const sel = AppState.get("sel");
-            if (!sel.has(d.id)) {
-                sel.add(d.id);
-                AppState.setState({
-                    sel
-                });
+            if (!S.sel.has(d.id)) {
+                S.sel.add(d.id);
                 requestAnimationFrame(() => {
-                    if (AppState.get("view") === "list") renderVisibleList(); else renderVisibleGrid();
+                    if (S.view === "list") renderVisibleList(); else renderVisibleGrid();
                 });
             }
-            const ids = [...sel];
+            const ids = [...S.sel];
             e.dataTransfer.setData("application/pfm-ids", JSON.stringify(ids));
             e.dataTransfer.effectAllowed = "move";
             const L = getStrings();
@@ -1937,36 +1909,12 @@
     };
     const { rE: version } = package_namespaceObject;
     console.log("🚀 PikPak Script: LOADED from main.js");
-    function syncState(S) {
-        AppState.setState({
-            view: S.view,
-            display: S.display,
-            sel: S.sel,
-            sort: S.sort,
-            dir: S.dir,
-            loading: S.loading,
-            items: S.items,
-            path: S.path,
-            history: S.history,
-            forward: S.forward,
-            scanning: S.scanning,
-            dupMode: S.dupMode,
-            dupRunning: S.dupRunning,
-            dupReasons: S.dupReasons,
-            dupGroups: S.dupGroups,
-            dupSizeStrategy: S.dupSizeStrategy,
-            dupDateStrategy: S.dupDateStrategy,
-            lastSelIdx: S.lastSelIdx,
-            search: S.search,
-            gridZoom: S.gridZoom
-        });
-    }
     async function openManager() {
         if (document.querySelector(".pk-ov")) return;
         _mgrAbort = new AbortController();
         const L = getStrings();
         const lang = getLang();
-        const S = {
+        S = {
             path: [{
                 id: "",
                 name: "🏠 Home"
@@ -2001,7 +1949,6 @@
             dupFilter: "all",
             dupCachedGroups: null
         };
-        syncState(S);
         const el = createLayout(L, lang, version);
         initModal(UI.win, L);
         injectStyles();
@@ -2067,15 +2014,12 @@
         };
         const updateLoadTxt = txt => updateLoadingText(txt);
         const _updateNavState = () => {
-            syncState(S);
             updateNavState();
         };
         const _updateStat = () => {
-            syncState(S);
             updateStat(L);
         };
         const _render = () => {
-            syncState(S);
             render();
         };
         setHandlers({
@@ -2098,8 +2042,7 @@
                     S.sel.add(d.id);
                     S.lastSelIdx = i;
                 }
-                syncState(S);
-                renderList();
+                    renderList();
                 _updateStat();
             },
             onRowDblClick(e, d) {
@@ -2123,8 +2066,7 @@
                     S.sel.clear();
                     S.sel.add(d.id);
                     S.lastSelIdx = i;
-                    syncState(S);
-                    renderList();
+                            renderList();
                     _updateStat();
                 }
                 UI.ctx.style.display = "block";
@@ -2169,8 +2111,7 @@
                     S.sel.add(d.id);
                     S.lastSelIdx = idx;
                 }
-                syncState(S);
-                renderGrid();
+                    renderGrid();
                 _updateStat();
             },
             onCardDblClick(e, d) {
@@ -3910,8 +3851,7 @@
             UI.gridZoom.oninput = e => {
                 S.gridZoom = parseInt(e.target.value, 10);
                 gmSet("pk_grid_zoom", S.gridZoom.toString());
-                syncState(S);
-                renderGrid();
+                    renderGrid();
             };
         }
         if (UI.btnLinkCopy) {
