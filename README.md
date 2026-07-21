@@ -38,6 +38,7 @@ src/
   api.js        PikPak API 封装 (pkFetch / apiList / ...)
   player.js     视频播放器 (playVideo / HLS / 字幕轨道)
   render.js     虚拟列表·网格渲染 (render* / getIcon / applyDragDrop)
+  render_plan.js  渲染复用的纯决策函数 (planCell,可单测)
   main.js       核心逻辑 (状态 / UI / 模态框 / openManager / 注入)
 ```
 
@@ -50,7 +51,7 @@ npm run build    # 打包 src/ → PikPak_Assistant.user.js
 
 `PikPak_Assistant.user.js` 是**构建产物**(已提交,供 Greasyfork 同步)。不要直接手改产物——改 `src/` 后 `npm run build`。
 
-> 注:播放器(`player.js`)、渲染层(`render.js`)已拆为独立模块,均为纯搬迁、构建产物逐字节等价。`main.js` 仍含 openManager 巨型闭包与业务逻辑。唯一剩余的高风险重构是把 `render.js` 的命令式 `innerHTML` 全量重建改成组件化渲染,须对着真实 PikPak 边改边验,详见 [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md)。
+> 注:播放器(`player.js`)、渲染层(`render.js`)已拆为独立模块。渲染层进一步做了 keyed 节点池化(复用 DOM、缩略图滚动不再重载),决策逻辑 `planCell` 在 `render_plan.js` 里可单测。`main.js` 仍含 openManager 巨型闭包与业务逻辑。架构重构(A/B/C/D/E)已收尾;渲染池化改了运行时行为,合并前须对着真实 PikPak 回归,详见 [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md)。
 
 The source is modularized under `src/` and bundled into a single `.user.js` with esbuild. Edit `src/`, then `npm run build`. `PikPak_Assistant.user.js` is the committed build artifact (synced by Greasyfork) — don't hand-edit it.
 

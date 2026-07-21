@@ -36,17 +36,30 @@ esbuild 把三方扁平化进一个 IIFE 作用域,无 TDZ。
 main.js 从原 ~4300 行单体降到 2486,仍含 openManager 巨型闭包、模态框、
 工具栏、布局、注入、状态与业务逻辑。
 
-## 仅剩 E 完整 (高风险,留到有真实测试条件再做)
+## E 完整 (已做,2026-07-21,待真机验证)
 
-当前 `render.js` 里的 `renderVisibleList` / `renderVisibleGrid` 仍是命令式
-`innerHTML` 全量重建(每次滚动/选择都 `UI.in.innerHTML = ""` 再逐行
-`createElement`)。**E 完整** = 把它改成组件化(keyed diff / 轻量模板),
-减少全量重建、保留 DOM 状态。
+`renderVisibleList` / `renderVisibleGrid` 已从命令式 `innerHTML` 全量重建改成
+**keyed 节点池协调**:按 item id(列表分组头按 `h:type:name`)复用元素,
+每帧只 create 进入项 / reuse+reposition 存活项 / remove 离开项。行/卡片是
+绝对定位(top=index),协调无需 DOM 重排。每格的决策是纯函数
+`planCell`(`src/render_plan.js`,leaf 模块,Node 可直接单测)。
+`resetPoolIfNeeded` 在容器换新(重开管理器)或视图切换时清池;网格用 geom
+签名检测缩放/尺寸变化以整体重定位。
 
-这是整个重构最大的一次**行为改写**:它会改变渲染时机、DOM 复用、事件绑定,
-**无法用排序-diff 证等价,也无法靠 stub 加载验证**。必须能对着真实 PikPak
-边改边验(滚动流畅度、选择态、拖放、缩略图懒加载、分组头、路径显示都要回归)。
-**不要盲做。** 做时建议:先只改 list 或只改 grid 之一,小步验证再推另一个。
+**行为差异**:元素跨渲染复用 → 网格 `<img>` 缩略图滚动时不再重载/闪烁;
+选择切换只动那一个卡片而非重建整窗;`.pk-card` 有 `transition:background .1s`,
+故复用卡片的选择切换现在有 0.1s 淡入(旧版每次新元素、瞬时)——列表行无
+transition,不变。
+
+**离线已验**:planCell 真值表 7 例 + 用**真实 planCell** 驱动协调模拟器跑
+初始/滚动/选择/排序/刷新/换目录/表头 7 场景(共 38 断言全过);新旧 render.js
+的 innerHTML/cssText 模板串逐字节对比,仅新增 2 个不进 DOM 的内部 key 串,
+所有产生可见 DOM 的模板未变;build 0 警告 + node --check + stub 加载过。
+**未验(必须真机测)**:浏览器实际 DOM 行为——滚动流畅度、选择态、拖放、
+缩略图懒加载、分组头、路径显示,合并前务必在真实 PikPak 回归。
+
+至此 **A/B/C/D/E 全部完成**,`refactor/modularize` 分支的重构已收尾,只待
+用户真机验证 + 合并。
 
 ## 落地 / 验证
 
