@@ -36,7 +36,9 @@ src/
   config.js     CONF 配置 + 图标 SVG
   utils.js      工具函数 (esc / fmt* / sleep / gmGet / gmSet)
   api.js        PikPak API 封装 (pkFetch / apiList / ...)
-  main.js       核心逻辑 (状态 / UI / 渲染 / openManager / 播放器 / 注入)
+  player.js     视频播放器 (playVideo / HLS / 字幕轨道)
+  render.js     虚拟列表·网格渲染 (render* / getIcon / applyDragDrop)
+  main.js       核心逻辑 (状态 / UI / 模态框 / openManager / 注入)
 ```
 
 改代码后重新构建:
@@ -48,7 +50,7 @@ npm run build    # 打包 src/ → PikPak_Assistant.user.js
 
 `PikPak_Assistant.user.js` 是**构建产物**(已提交,供 Greasyfork 同步)。不要直接手改产物——改 `src/` 后 `npm run build`。
 
-> 注:`main.js` 仍是一个较大的核心模块(状态/UI/播放器/事件都在里面)。进一步把播放器、渲染层拆成独立模块(重构 B/E)是可选的后续工作,风险较高,建议在能对着真实 PikPak 逐步验证的条件下做。
+> 注:播放器(`player.js`)、渲染层(`render.js`)已拆为独立模块,均为纯搬迁、构建产物逐字节等价。`main.js` 仍含 openManager 巨型闭包与业务逻辑。唯一剩余的高风险重构是把 `render.js` 的命令式 `innerHTML` 全量重建改成组件化渲染,须对着真实 PikPak 边改边验,详见 [`REFACTOR_PLAN.md`](REFACTOR_PLAN.md)。
 
 The source is modularized under `src/` and bundled into a single `.user.js` with esbuild. Edit `src/`, then `npm run build`. `PikPak_Assistant.user.js` is the committed build artifact (synced by Greasyfork) — don't hand-edit it.
 
